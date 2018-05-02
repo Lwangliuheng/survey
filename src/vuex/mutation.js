@@ -5,6 +5,9 @@ const mutation = {
   setInsititutEditorActive(state, obj) {
     state.insititutEditorActive = obj
   },
+  setIsChannelList(state, obj) {
+    state.isChannelList = obj;
+  },
   setHeaderActive(state, obj) {
     state.headerActive = obj
   },
@@ -19,6 +22,9 @@ const mutation = {
   },
   getclickEditorActive(state, obj) {
     state.clickEditorActive = obj
+  },
+  getsubmitCreateActive(state, obj) {
+    state.submitCreateActive = obj;
   },
   getinsitituPageno(state, obj) {
     state.insitituPageno = obj

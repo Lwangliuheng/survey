@@ -417,6 +417,8 @@
             </el-tab-pane>
             <el-tab-pane  label="查勘员管理" name="four">
             </el-tab-pane>
+            <el-tab-pane  label="渠道管理" name="six">
+            </el-tab-pane>
           </el-tabs>
         </div>
       </div>
@@ -432,6 +434,8 @@
     <institution-manage v-if="insitituteActive"></institution-manage>
     <survey-manage v-if="surveyActive"></survey-manage>
     <single-agency v-if="agencyActive"></single-agency>
+    <channelManage v-if="channelManageActive"></channelManage>
+
   </div>
 
 </template>
@@ -442,6 +446,8 @@
   import institutionManage from '@/components/institutionManage'
   import surveyManage from '@/components/surveyManage'
   import singleAgency from '@/components/SingleAgency'
+  import channelManage from '@/components/channelManage'
+  // import childInstitutionList from '@/components/childInstitutionList'
   import axios from 'axios'
   //  import BMap from 'BMap'
 
@@ -481,6 +487,7 @@
         insitituteActive: true,
         surveyActive: false,
         agencyActive: false,
+        channelManageActive: false,
         cityData: ['京','津','冀','晋','蒙','辽','吉','黑','沪','苏','浙','皖','闽','赣','鲁','豫','鄂','湘','粤','贵','云','藏','陕','甘','青','宁','新','琼','渝','川','桂'],
         cityModel:'',
         tuiCityArr:[],
@@ -501,12 +508,14 @@
         this.caseActive = true;
         this.seatActive = false;
         this.agencyActive = false;
+        this.channelManageActive = false;        
       }else{
         this.insitituteActive = true;
         this.surveyActive = false;
         this.caseActive = false;
         this.seatActive = false;
         this.agencyActive = false;
+        this.channelManageActive = false;                
       }
 
     },
@@ -518,18 +527,21 @@
           this.insitituteActive = false;
           this.surveyActive = false;
           this.agencyActive = false;
+          this.channelManageActive = false;                  
         }else if(this.activeName == "second"){
           this.caseActive = false;
           this.seatActive = true;
           this.insitituteActive = false;
           this.surveyActive = false;
           this.agencyActive = false;
+          this.channelManageActive = false;                  
         }else if(this.activeName == 'five'){
           this.caseActive = false;
           this.seatActive = false;
           this.insitituteActive = false;
           this.surveyActive = false;
           this.agencyActive = true;
+          this.channelManageActive = false;                  
         }
       },
       "activeNameTwo"(){
@@ -539,12 +551,21 @@
           this.insitituteActive = true;
           this.surveyActive = false;
           this.agencyActive = false;
+          this.channelManageActive = false;          
         }else  if(this.activeNameTwo == 'four'){
           this.caseActive = false;
           this.seatActive = false;
           this.insitituteActive = false;
           this.surveyActive = true;
           this.agencyActive = false;
+          this.channelManageActive = false;          
+        }else if(this.activeNameTwo == 'six') {
+          this.caseActive = false;
+          this.seatActive = false;
+          this.insitituteActive = false;
+          this.surveyActive = false;
+          this.agencyActive = false;
+          this.channelManageActive = true;
         }
       }
     },
@@ -612,6 +633,7 @@
       },
       goInsitituList() {
         this.$store.commit('setInsititutEditorActive', false);
+        this.$store.commit('setIsChannelList', true);
       },
       //退出
       clickSignOut() {
@@ -620,11 +642,13 @@
             if(response.data.rescode == 200){
               this.$store.commit('setCaseDetailActive', false);
               this.$store.commit('setInsititutEditorActive', false);
+              this.$store.commit('setIsChannelList', true);
               this.$store.commit('setHeaderActive', false);
               this.$store.commit('setSignSeatsActive', false);
               this.$store.commit('getsurveyOrderId', "");
               this.$store.commit('getcaseListActive', false);
               this.$store.commit('getclickEditorActive', false);
+              this.$store.commit('getsubmitCreateActive', false);
               this.$store.commit('getinsitituPageno', 1);
               localStorage.removeItem('insititutEditorData');//机构编辑
               localStorage.removeItem('caseDetailData');//详情信息
@@ -931,6 +955,7 @@
       institutionManage,
       surveyManage,
       singleAgency,
+      channelManage
     },
   }
 

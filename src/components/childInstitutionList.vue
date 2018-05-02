@@ -1,0 +1,162 @@
+<template>
+<div class="child-institution-list">
+    <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item>
+            <el-button type="success" @click="onAdd">新增</el-button>
+        </el-form-item>
+        <!-- <el-form-item label="机构名称">
+            <el-input v-model="formInline.company" placeholder="请输入机构名称"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人">
+            <el-input v-model="formInline.person" placeholder="请输入联系人"></el-input>
+        </el-form-item>
+        <el-form-item label="是否有效">
+        <el-radio v-model="radio" label="1">备选项</el-radio>
+        <el-radio v-model="radio" label="2">备选项</el-radio>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="success" @click="onSearch">查询</el-button>
+        </el-form-item> -->
+    </el-form>
+    <!-- 列表 -->
+    <el-table
+        :data="tableData"
+        style="width: 100%;margin-top:10px;">
+        <el-table-column
+            label="序号"
+            type="index"
+            width="50">
+        </el-table-column>
+        <el-table-column
+            prop="company"
+            label="机构名称"
+            width="220">
+        </el-table-column>
+        <el-table-column
+            prop="person"
+            label="联系人">
+        </el-table-column>
+        <el-table-column
+            prop="tel"
+            label="联系人电话">
+        </el-table-column>
+        <el-table-column
+            prop="address"
+            label="地址"
+            width="300">
+        </el-table-column>
+        <el-table-column
+            prop="status"
+            label="当前状态"
+            width="100">
+        </el-table-column>
+        <el-table-column
+            label="操作"
+            width="120">
+            <template slot-scope="scope">
+                <el-button style="font-size:16px;" @click="handleClick(scope.row)" type="text" class="el-icon-edit-outline"></el-button>
+                <el-button type="text" @click='onAdd'>详情</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+        <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-size="pagesize"
+        layout="total, prev, pager, next"
+        :total="1000">
+        </el-pagination>
+    </div>
+</template>
+
+<script>
+    import axios from 'axios'
+export default {
+  data() {
+    return {
+      formInline: {
+        company: "",
+        person: ""
+      },
+      radio: "1", // 是否有效
+      currentPage: 1,
+      pagesize: 10,
+      tableData: [
+        {
+          company: "哈哈哈",
+          person: "王小虎",
+          tel: "18811533344",
+          address: "上海市普陀区金沙江路 1518 弄",
+          status: "正常",
+          id: '1'
+        },
+        {
+          company: "哈哈哈",
+          person: "王小虎",
+          tel: "18811533344",
+          address: "上海市普陀区金沙江路 1518 弄",
+          status: "正常",
+          id: '2'
+        },
+        {
+          company: "哈哈哈",
+          person: "王小虎",
+          tel: "18811533344",
+          address: "上海市普陀区金沙江路 1518 弄",
+          status: "正常",
+          id: '3'
+        }
+      ]
+    };
+  },
+
+  mounted() {
+      this.turnPage();
+  },
+
+  methods: {
+    // 查询
+    onSearch() {},
+    // 新增
+    onAdd() {
+      //   this.$router.push();
+    //   alert("111");
+        console.log("ssss");
+        this.$store.commit('setIsChannelList', false);
+    },
+
+    handleClick(row) {
+      console.log(row);
+      
+    },
+
+    // 翻页函数
+    turnPage () {
+        axios.post(this.ajaxUrl+ '/pubsurvey/manage/rider/department/v1/orglist',{
+            pageno: this.currentPage,
+            pagesize: this.pagesize
+        }).then ( res => {
+            console.log(res);
+        })
+    },
+    // 翻页
+    handleCurrentChange (val) {
+        this.currentPage = val;
+        this.turnPage();
+    },
+
+  }
+};
+</script>
+
+<style scoped>
+.child-institution-list {
+  background: #fff;
+  margin: 15px auto;
+  width: 80%;
+  overflow-y: scroll;
+  height: 82vh;
+  padding: 20px;
+}
+</style>
+
