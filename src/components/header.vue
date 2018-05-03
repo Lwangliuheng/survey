@@ -407,7 +407,7 @@
             </el-tab-pane>
             <el-tab-pane  label="坐席管理" name="second">
             </el-tab-pane>
-            <el-tab-pane  label="派单机构" name="five">
+            <el-tab-pane  label="派单机构" name="five"  v-if="zcState == 'true'">
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -448,6 +448,7 @@
   export default {
     data(){
       return{
+        zcState:false,
         zhongcheActive: true,
         chinaName: '',
         userName: '',
@@ -494,6 +495,8 @@
       this.chinaName = localStorage.getItem('chinaName')
       this.userName = localStorage.getItem('userName')
       this.headerActiveOne = localStorage.getItem('setHeaderActive');
+      this.zcState = localStorage.getItem('zcState');
+      alert(this.zcState)
       this.insurecompanyCode = localStorage.getItem('insurecompanyCode');
       if(this.headerActiveOne == 'true'){
         this.insitituteActive = false;
