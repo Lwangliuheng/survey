@@ -496,7 +496,7 @@
       this.userName = localStorage.getItem('userName')
       this.headerActiveOne = localStorage.getItem('setHeaderActive');
       this.zcState = localStorage.getItem('zcState');
-      alert(this.zcState)
+      // alert(this.zcState)
       this.insurecompanyCode = localStorage.getItem('insurecompanyCode');
       if(this.headerActiveOne == 'true'){
         this.insitituteActive = false;
