@@ -46,7 +46,7 @@
     <el-form-item label="密码" prop="password">
         <el-input type="password" v-model.trim="ruleForm.password" placeholder="请输入机构密码"  v-show='!isShowPwd'></el-input>
         <el-input type="text" v-model.trim="ruleForm.password" placeholder="请输入机构密码" v-show='isShowPwd'></el-input>
-        <span class="el-icon-view" @click='showPwd' v-if="!userid"></span>
+        <span class="el-icon-view" @mouseover='isShowPwd=true' @mouseout="isShowPwd=false" v-if="!userid"></span>
     </el-form-item>
     <el-form-item label="账号状态" prop="status">
         <el-select v-model="ruleForm.status" value-key="value" placeholder="请选择账号状态">
@@ -386,9 +386,6 @@ export default {
         this.ruleForm.code = guid();
     },
 
-    showPwd () {
-        this.isShowPwd = !this.isShowPwd;
-    },
     // 生成二维码
     setQRcode() {
         if(!this.ruleForm.code) {
