@@ -122,16 +122,27 @@ export default {
       };
       var checkPassword = (rule, value, callback) => {
         if (!value) {
-          return callback(new Error('请输入机构密码'));
+          return callback(new Error('请输入密码'));
         }else {
             if (!(/^[0-9a-zA-Z]{6,25}$/g).test(value)) {
-                callback(new Error('长度在6到25个字符,只能包含数组和英文大小写'));
+                callback(new Error('长度在6到25个字符,只能包含数字和英文大小写'));
             } else {
                 callback();
             }
         }
       };
 
+       var checkAccount = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('请输入账号'));
+        }else {
+            if (!(/^[0-9a-zA-Z]{4,20}$/g).test(value)) {
+                callback(new Error('长度在4到20个字符,只能包含数字和英文大小写'));
+            } else {
+                callback();
+            }
+        }
+      };
 
     return {
         ajaxUrl: '/boot-pub-survey-manage',        
@@ -210,7 +221,8 @@ export default {
           { required: true, message: "请选择账号状态", trigger: "change" }
         ],
         account: [
-          { required: true, message: "请输入机构账号", trigger: "blur" }            
+            // { required: true, message: "请输入机构账号", trigger: "blur" }      
+            {required: true, validator: checkAccount, trigger: 'blur' }                            
         ],
         password: [
             {required: true, validator: checkPassword, trigger: 'blur' }            

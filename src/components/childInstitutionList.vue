@@ -1,6 +1,6 @@
 <template>
 <div class="child-institution-list">
-    <el-form :inline="true" :model="formInline" style="width:100%;overflow:hidden;">
+    <el-form :inline="true" :model="formInline" style="width:86%;overflow:hidden;margin:15px auto;">
         <el-form-item style="float:right;margin-bottom: 5px;">
             <el-button type="success" @click="onAdd" class="create">新增</el-button>
         </el-form-item>
@@ -21,7 +21,7 @@
     <!-- 列表 -->
     <el-table
         :data="tableData"
-        style="width: 100%;margin-top:10px;min-height:500px;"
+        style="width: 86%;margin-top:10px;min-height:500px;margin: 15px auto;"
         class="channel-list">
         <el-table-column
             label="序号"
@@ -148,7 +148,7 @@ export default {
   width: 80%;
   overflow-y: scroll;
   height: 82vh;
-  padding: 20px;
+  /* padding: 20px; */
 }
 </style>
 

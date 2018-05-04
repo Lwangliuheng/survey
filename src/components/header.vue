@@ -416,15 +416,15 @@
             <el-tab-pane  label="机构管理" name="third">
             </el-tab-pane>
               <!-- 暂时先注释  中车最高权限不添加此模块呢-->
-            <!-- <el-tab-pane  label="查勘员管理" name="four">  
-            </el-tab-pane> -->
+            <el-tab-pane  label="查勘员管理" name="four">  
+            </el-tab-pane>
             <el-tab-pane  label="渠道管理" name="six">
             </el-tab-pane>
           </el-tabs>
         </div>
         <div class="menu" v-if="isChannel == 'true'" @click="goInsitituList">
           <el-tabs v-model="activeNameThree" @tab-click="handleClick">
-            <el-tab-pane  label="查勘员管理" name="seven">
+            <el-tab-pane  label="骑手管理" name="seven">
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -439,7 +439,7 @@
     <case-manage v-if="caseActive"></case-manage>
     <seat-manage v-if="seatActive"></seat-manage>
     <institution-manage v-if="insitituteActive"></institution-manage>
-    <!-- <survey-manage v-if="surveyActive"></survey-manage> -->
+    <survey-manage v-if="surveyActive"></survey-manage>
     <single-agency v-if="agencyActive"></single-agency>
     <channelManage v-if="channelManageActive"></channelManage>
     <surveyManageCompany v-if="surveyCompanyActive"></surveyManageCompany>

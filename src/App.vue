@@ -17,7 +17,8 @@ export default {
    padding: 0 10px;
 }
 .ruleForm {
-  width: 100%;
+  width: 95%;
+  margin: 15px auto;
   overflow: hidden;
 }
 .ruleForm .el-input__suffix {

@@ -195,6 +195,7 @@
             <th style="width:16%;">所属单位</th>
             <th style="width:12%;">添加时间</th>
             <th style="width:8%;">账号状态</th>
+            <th style="width:8%;">审核状态</th>
             <th>接单次数</th>
             <th style='width:13%'>操作</th>
           </tr>
@@ -211,6 +212,7 @@
             <td>{{item.affiliateCompany}}</td>
             <td style="width:160px;">{{item.joinTime}}</td>
             <td>{{item.accountStatu}}</td>
+            <td>{{item.areaflag == '2' ? '通过': '未通过'}}</td>
             <td>{{item.orderTakeCount}}</td>
             <td >
               <span class="listView" @click="goSurveyDetail(item.userId,item.orderTakeCount)">查看</span>
@@ -277,7 +279,8 @@
         orderTakeCount:'',
         pages: '',
         imgUrl: '',
-        isAllChecked: false,
+        isAllChecked: false, // 全选状态
+        isEdit: false, // 编辑状态
         surveyOption:[
           {"name":"正常","code":"0"},
           {"name":"锁定","code":"1"}
@@ -532,7 +535,7 @@
                 "companyname": companyename,
                 "isvalid": this.isvalid
               };
-              var url = '/pubsurvey/surveyor/v1/user/surveyoradd'
+              var url = '/pubsurvey/surveyor/v1/rider/surveyoradd'
             }else{
               var paramData = {
                 "accesstoken": this.surveyInfo.auUserId,
@@ -545,7 +548,7 @@
                 "companyname": companyename,
                 "isvalid": this.isvalid
               };
-              var url = '/pubsurvey/surveyor/v1/user/surveyorupdate';
+              var url = '/pubsurvey/surveyor/v1/rider/surveyorupdate';
             }
             axios.post(this.ajaxUrl+ url,paramData)
               .then(response => {
@@ -586,11 +589,20 @@
       openSurvey(){
         $(".surveyDialog").removeClass("hide");
         $(".adddialogTitle").html("添加查勘员");
+        // 如果不是编辑状态 清空
+        if(!this.isEdit){
+          this.surveyor = '';
+          this.surveyorphone = '';
+          this.imgUrl = '';
+          this.insurecode = '';
+          this.citycode = '';
+        }
         this.addActive = true;
         this.getProvince();
         this.number = 1;
       },
       openEditor(){
+        this.isEdit = true;
         $(".surveyDialog").removeClass("hide");
         this.addActive = false;
         $(".adddialogTitle").html("编辑查勘员信息")
@@ -658,6 +670,7 @@
         $(".insititutListDialog ").addClass("hide");
       },
       closeSurvey(){
+        this.isEdit = false;
         $(".surveyDialog").addClass("hide");
         this.addActive = false;
         $(".adddialogTitle").html("添加查勘员")

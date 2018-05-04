@@ -248,21 +248,24 @@
                   localStorage.setItem('orgcode',response.data.data.user.orgcode);
                   localStorage.setItem('insurecompanyCode',response.data.data.org.insurecompanyCode);
                   var insititueName = 0,caseNum = 0, isChannel = false; // 渠道管理;
-                  for(let i in response.data.data.userfunctions){
-                    if(response.data.data.userfunctions[i].name == "机构管理"){
-                      insititueName++;
+                  if(response.data.data.user.workertype == '3'){           
+                    isChannel = true;
+                    localStorage.setItem('riderCompanyName',response.data.data.org.riderCompanyName);
+                    localStorage.setItem('riderCompanyCode',response.data.data.org.riderCompanyCode);
+                  }else {
+
+                    for(let i in response.data.data.userfunctions){
+                      if(response.data.data.userfunctions[i].name == "机构管理"){
+                        insititueName++;
+                      }
+                      if(response.data.data.userfunctions[i].name == "坐席管理"){
+                        caseNum++;
+                      }
                     }
-                    if(response.data.data.userfunctions[i].name == "坐席管理"){
-                      caseNum++;
-                    }
-                    if(response.data.data.userfunctions[i].name == "骑手管理") {
-                      isChannel = true;
-                      localStorage.setItem('riderCompanyName',response.data.data.org.riderCompanyName);
-                      localStorage.setItem('riderCompanyCode',response.data.data.org.riderCompanyCode);
-                    } 
-                    // 存储渠道机构登录状态
-                    localStorage.setItem('isChannel',isChannel)
                   }
+                  // 存储渠道机构登录状态
+                localStorage.setItem('isChannel',isChannel)
+
                 if(insititueName != 0 && caseNum ==0){
                   setHeaderActive = false;
                   localStorage.setItem('setHeaderActive',setHeaderActive)
