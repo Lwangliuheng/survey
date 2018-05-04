@@ -98,10 +98,11 @@
               </div>
               <div class="addinsitituteInput">
                 <span class="spanInfo">所属单位</span>
-                <select v-model="compnaycode" class="selectBox">
+                <span style='font-size: 12px;'>{{companyename}}</span>
+                <!-- <select v-model="compnaycode" class="selectBox">
                   <option value="">请选择所属单位</option>
                   <option v-for="item in addcompaneyOptions" :value="item.companyCode">{{item.companyName}}</option>
-                </select>
+                </select> -->
               </div>
               <div class="addinsitituteInput">
                 <span class="spanInfo">帐号状态</span>
@@ -120,9 +121,10 @@
     </div>
     <div class="caseList">
       <div class="insitutionTab">
-        <span class="insitutionTitle active">查勘员管理</span>
+        <span class="insitutionTitle" :class="{active: !isAudit}" @click='switchList'>查勘员管理</span>
+        <span class="insitutionTitle" :class="{active: isAudit}" @click='switchList'>审核管理</span>
         <div class="lineBox"></div>
-        <span class="addSurveyMember" @click="openSurvey">添加查勘员</span>
+        <span class="addSurveyMember" v-show="!isAudit" @click="openSurvey">添加查勘员</span>
       </div>
       <div class="caseListHeader">
         <form>
@@ -166,51 +168,43 @@
               :value="item.code">
             </el-option>
           </el-select>
-            <span class="caseListSure" @click="formSure">确定 </span>
+            <span class="caseListSure" @click="formSure">确定</span>
             <span class="caseListReset" @click="resetData">重置</span>
         </form>
       </div>
       <div class="caseListTable" v-if="tableActive">
         <div class="tableTitle">
-          <span>共: {{pages}}页,</span>
-          <span>{{totalCount}}条, </span>
-          <span>当前页: {{currentCount}}条</span>
+          <div class="multiBtn" v-show="isAudit" @click="multiOperate('1')">批量同意</div>
+          <div class="multiBtn" v-show="isAudit" @click="multiOperate('0')">批量拒绝</div>
+          <div style="float:right; display:inline-block;">
+            <span>共: {{pages}}页,</span>
+            <span>{{totalCount}}条, </span>
+            <span>当前页: {{currentCount}}条</span>
+          </div>
         </div>
         <table class="table" border="0" cellspacing="0" cellpadding="0" style="border-top: 1px solid #bbb;">
           <thead>
           <tr>
-            <th style="border-left:1px solid #bbb;">
-              编号
+            <th style="border-left:1px solid #bbb;width:50px;">
+              <input v-show="isAudit" type="checkbox" v-model="isAllChecked" @change="chooseAll">
+              <span v-show="!isAudit">选择</span> 
             </th>
-            <th>
-              查勘员姓名
-            </th>
-            <th>
-              查勘员手机号
-            </th>
-            <th>
-              所属城市
-            </th>
-            <th style="width:16%;">
-              所属单位
-            </th>
-            <th style="width:12%;">
-              添加时间
-            </th>
-            <th style="width:18%;">
-              账号状态
-            </th>
-            <th>
-              接单次数
-            </th>
-            <th>
-              操作
-            </th>
+            <th>查勘员姓名</th>
+            <th>查勘员手机号</th>
+            <th>所属城市</th>
+            <th style="width:16%;">所属单位</th>
+            <th style="width:12%;">添加时间</th>
+            <th style="width:8%;">账号状态</th>
+            <th>接单次数</th>
+            <th style='width:13%'>操作</th>
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(item,index) in tableData" :key='index'>
-            <td>{{index+1}}</td>
+          <tr v-for="(item,index) in tableData" :key="index">
+            <td>
+              <input v-show="isAudit" type="checkbox" v-model='item.isChecked' @change='onCheckboxChange($event,index)'>
+              <span v-show="!isAudit">{{index+1}}</span>
+            </td>
             <td>{{item.name}}</td>
             <td>{{item.phone}}</td>
             <td>{{item.affiliateCity}}</td>
@@ -218,7 +212,11 @@
             <td style="width:160px;">{{item.joinTime}}</td>
             <td>{{item.accountStatu}}</td>
             <td>{{item.orderTakeCount}}</td>
-            <td ><span class="listView" @click="goSurveyDetail(item.userId,item.orderTakeCount)">查看</span></td>
+            <td >
+              <span class="listView" @click="goSurveyDetail(item.userId,item.orderTakeCount)">查看</span>
+              <span v-show="isAudit" class="listView" @click="singleAudit(item.userId,'1')">同意</span>
+              <span v-show="isAudit" class="listView" @click="singleAudit(item.userId,'0')">拒绝</span>
+            </td>
           </tr>
           </tbody>
         </table>
@@ -247,14 +245,16 @@
   export default {
     data() {
       return {
+        isAudit: false, // tab切换
+        multiArr: [], //批量操作的数组
         headiconUrl:'',
         surveyor:'',
         surveyorphone:"",
         headicon:'',
         citycode:"",
         cityname:"",
-        compnaycode:"",
-        companyename:"",
+        compnaycode:localStorage.riderCompanyCode,
+        companyename:localStorage.riderCompanyName,
         isvalid:"0",
         addprovincesOption:[],
         addCityOPtion:[],
@@ -277,6 +277,7 @@
         orderTakeCount:'',
         pages: '',
         imgUrl: '',
+        isAllChecked: false,
         surveyOption:[
           {"name":"正常","code":"0"},
           {"name":"锁定","code":"1"}
@@ -353,16 +354,115 @@
           this.getCaseList()
         }
       },
+      
     },
 
     created() {
       this.getCompaney();
-      this.getCaseList()
+      this.getCaseList();
     },
     mounted() {
-      this.caseDetailActive = this.$store.state.caseDetailActive;
+      this.caseDetailActive = this.$store.state.caseDetailActive;  
     },
+
     methods: {
+        // 查勘员管理
+        switchList(){
+          this.isAudit = !this.isAudit;
+          // 清空搜索内容
+          this.affiliateCompanyCode = "";
+          this.affiliateCityCode = "";
+          this.surveyUserName = "";
+          this.phone = "";
+          this.reportInsuranceNo = "";
+          this.surveyStatus = "";
+          // 刷新列表
+          this.getCaseList();
+          
+        },
+
+        // 当复选框发生变化时
+        onCheckboxChange (ev,index) {
+          // 先清空数组
+          this.multiArr = [];
+
+          let flag = 0;
+          this.tableData.forEach(item => {
+            if(item.isChecked){
+              flag++;
+              this.multiArr.push(item.userId); // 把选中的存进数组中
+            }
+          })
+          console.log(this.multiArr);
+
+          // 如果选中数量等于当前页
+          if(flag == this.currentCount){
+            this.isAllChecked = true;
+          }else {
+            this.isAllChecked = false;
+          }
+        },
+
+        // 全选操作
+        chooseAll () {
+          // 审核管理 全选判断
+          this.multiArr = [];
+          if(this.isAllChecked) {
+            
+            this.tableData.forEach( item => {
+              item.isChecked = true;
+              this.multiArr.push(item.userId);
+            })
+          }else {
+            this.tableData.forEach( item => {
+              item.isChecked = false;
+            })
+          }
+          
+        },
+
+        // 单行审核操作
+        singleAudit(id,status) {
+          const that = this;          
+          this.auditAjax(Array.of(id),status,function(){
+            // 刷新列表
+            that.getCaseList();
+          })
+        },
+
+        // 批量审核操作
+        multiOperate (status) {
+          const that = this;
+          if(this.multiArr.length){
+          
+             this.auditAjax(this.multiArr,status,function(){
+               // 刷新列表
+               that.getCaseList();
+             })
+          }else {
+            this.open4('请至少选择一项进行操作');
+          }
+        },
+
+        // 审核操作
+        auditAjax(ids,status,cb) {
+          axios.post(this.ajaxUrl+ '/pubsurvey/surveyor/v1/rider/wholepickorder',{
+            ids: ids,
+            wholearea: status  // 是否开通 1开通 0 不开通
+          })
+          .then( res => {
+              if(res.data.rescode == 200) {
+                this.$message({
+                  message: '操作成功',
+                  type: 'success'
+                });
+                if(cb) cb();
+              }else {
+                this.open4(res.data.resdes)
+              }
+          })
+        },
+
         getFile(event) {
           this.file = event.target.files[0];
           console.log(this.file);
@@ -410,19 +510,17 @@
             this.open4("请选择省份")
           }else if(this.citycode == ''){
             this.open4("请选择城市")
-          }else if(this.compnaycode == ''){
-            this.open4("请选择所在单位")
           }else{
             for(let i in this.addCityOPtion){
               if(this.citycode == this.addCityOPtion[i].id){
                 var cityname = this.addCityOPtion[i].name;
               }
             }
-            for(let i in this.addcompaneyOptions){
-              if(this.compnaycode == this.addcompaneyOptions[i].companyCode){
-                var companyename = this.addcompaneyOptions[i].companyName;
-              }
-            }
+            // for(let i in this.addcompaneyOptions){
+            //   if(this.compnaycode == this.addcompaneyOptions[i].companyCode){
+            //     var companyename = this.addcompaneyOptions[i].companyName;
+            //   }
+            // }
             if(this.addActive){
               var paramData = {
                 "surveyor": this.surveyor,
@@ -457,7 +555,7 @@
                   this.surveyorphone = '';
                   this.imgUrl = '';
                   this.citycode = '';
-                  this.compnaycode = '';
+                  // this.compnaycode = ''; // 公司不用清空
                   this.isvalid = '0'
                   this.insurecode = '';
                   this.addCityOPtion = [];
@@ -503,25 +601,25 @@
         this.number = 0;
       },
       getProvince(){
-        axios.get(this.ajaxUrl+"/pubsurvey/surveyor/v1/user/affiliate/company")
-          .then(response => {
-            if(response.data.rescode == 200){
-              this.addcompaneyOptions = response.data.data;
-              if(this.addActive == false){
-                this.compnaycode = this.surveyInfo.auCompanyCode;
-              }
-            }else{
-              this.open4(response.data.resdes)
-              if(response.data.rescode == 300){
-                this.$router.push({path:'/'})
-              }
-            }
-          }, err => {
-            console.log(err);
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+        // axios.get(this.ajaxUrl+"/pubsurvey/surveyor/v1/user/affiliate/company")
+        //   .then(response => {
+        //     if(response.data.rescode == 200){
+        //       this.addcompaneyOptions = response.data.data;
+        //       if(this.addActive == false){
+        //         this.compnaycode = this.surveyInfo.auCompanyCode;
+        //       }
+        //     }else{
+        //       this.open4(response.data.resdes)
+        //       if(response.data.rescode == 300){
+        //         this.$router.push({path:'/'})
+        //       }
+        //     }
+        //   }, err => {
+        //     console.log(err);
+        //   })
+        //   .catch((error) => {
+        //     console.log(error)
+        //   })
         axios.get(this.ajaxUrl+"/pubsurvey/manage/department/v1/provinceinsure")
           .then(response => {
             if(response.data.rescode == 200){
@@ -529,7 +627,7 @@
               if(this.addActive == false){
                 this.insurecode = this.surveyInfo.auCityCode.substring(0,2);
 
-                console.log(this.insurecode);
+                console.log(this.f);
                 axios.get(this.ajaxUrl+"/pubsurvey/manage/department/v1/"+this.insurecode+"/citys")
                   .then(response => {
                     if(response.data.rescode == 200){
@@ -637,10 +735,23 @@
           "affiliateCityCode": this.affiliateCityCode,
           "accountStatus":this.accountStatus
         }
+        // 如果当前是审核管理
+        if(this.isAudit) paramData.areaflag = '1'; // areaflag=1 为待审核列表
+
         axios.post(this.ajaxUrl+"/pubsurvey/surveyor/v1/user/surveyors",paramData)
           .then(response => {
             if(response.data.rescode == 200){
               this.tableData = response.data.data.records;
+
+              // 如果当前是审核管理
+              if(this.isAudit){
+                  // 初始化
+                  this.isAllChecked = false;
+                this.tableData.forEach( item => {
+                  item.isChecked = false;
+                });
+              }
+
               this.$store.commit('getcaseListActive', false)//监听调用列表接口关闭
               if(response.data.data.records.length !=0){
                 this.tableActive = true;
@@ -674,6 +785,8 @@
       handleClick(row) {
         console.log(row);
       },
+
+      // 查询确定按钮
       formSure() {
         this.getCaseList()
       },
@@ -896,8 +1009,10 @@
     line-height: 45px;
     text-align: center;
     border: 1px solid #DFE4ED;
-    border-bottom: none;
     font-size: 15px;
+  }
+  .caseList .insitutionTab .active{
+    border-bottom: none;
     color: #2EAB3B;
   }
 
@@ -980,7 +1095,19 @@
     margin: 0 auto;
   }
   .caseListTable .tableTitle{
+    overflow: hidden;
     margin-bottom: 10px;
+    padding-top: 10px;
+  }
+  .caseListTable .tableTitle .multiBtn {
+    border: 1px solid #2EAB3B;
+    font-size: 15px;
+    border-radius: 5px;
+    padding: 2px 10px;
+    display: inline-block;
+    cursor: pointer;
+    color: #2EAB3B;
+    background: #fff;
   }
   .caseListTable .tableTitle span{
     padding-right: 5px;

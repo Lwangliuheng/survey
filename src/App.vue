@@ -12,8 +12,9 @@ export default {
 </script>
 
 <style>
-.el-input__inner {
+.ruleForm .el-input__inner {
    border: 1px solid #dcdfe6; 
+   padding: 0 10px;
 }
 .ruleForm {
   width: 100%;
@@ -29,7 +30,7 @@ export default {
 .ruleForm .el-button  {
   padding: 12px;
 }
-.el-button--success span{
+.ruleForm .el-button--success span{
   color: #fff;
 }
 .form-btn .el-form-item__content {
@@ -42,26 +43,26 @@ export default {
   padding: 12px 30px;
   font-size: 16px;
 }
-.el-input--suffix .el-input__inner {
+.ruleForm .el-input--suffix .el-input__inner {
   margin: 0;
   height: 40px;
   border-color: #dcdfe6;
 }
-.el-select {
+.ruleForm .el-select {
   margin: 0;
   width: 100%;
 }
-.el-radio__input.is-checked .el-radio__inner {
+.ruleForm .el-radio__input.is-checked .el-radio__inner {
     background-color: #67c23a;
     border-color: #67c23a;
 }
-.el-radio__input.is-checked+.el-radio__label {
+.ruleForm .el-radio__input.is-checked+.el-radio__label {
   color: #333;
 }
-.el-radio+.el-radio {
+.ruleForm .el-radio+.el-radio {
   margin-left: 10px;
 }
-.el-radio__label {
+.ruleForm .el-radio__label {
   padding-left: 5px;
 }
 .el-table__header {
@@ -76,6 +77,9 @@ export default {
   padding: 0;
 }
 .el-button--text span {
-      color: #409EFF;
+  color: #409EFF;
+}
+.child-institution-list .create span{
+  color: #fff;
 }
 </style>

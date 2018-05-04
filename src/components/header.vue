@@ -411,13 +411,20 @@
             </el-tab-pane>
           </el-tabs>
         </div>
-        <div class="menu" v-else @click="goInsitituList">
+        <div class="menu" v-if="headerActiveOne == 'false' && isChannel == 'false'" @click="goInsitituList">
           <el-tabs v-model="activeNameTwo" @tab-click="handleClick">
             <el-tab-pane  label="机构管理" name="third">
             </el-tab-pane>
-            <el-tab-pane  label="查勘员管理" name="four">
-            </el-tab-pane>
+              <!-- 暂时先注释  中车最高权限不添加此模块呢-->
+            <!-- <el-tab-pane  label="查勘员管理" name="four">  
+            </el-tab-pane> -->
             <el-tab-pane  label="渠道管理" name="six">
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+        <div class="menu" v-if="isChannel == 'true'" @click="goInsitituList">
+          <el-tabs v-model="activeNameThree" @tab-click="handleClick">
+            <el-tab-pane  label="查勘员管理" name="seven">
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -432,9 +439,10 @@
     <case-manage v-if="caseActive"></case-manage>
     <seat-manage v-if="seatActive"></seat-manage>
     <institution-manage v-if="insitituteActive"></institution-manage>
-    <survey-manage v-if="surveyActive"></survey-manage>
+    <!-- <survey-manage v-if="surveyActive"></survey-manage> -->
     <single-agency v-if="agencyActive"></single-agency>
     <channelManage v-if="channelManageActive"></channelManage>
+    <surveyManageCompany v-if="surveyCompanyActive"></surveyManageCompany>
 
   </div>
 
@@ -445,9 +453,9 @@
   import seatManage from '@/components/seatManage'
   import institutionManage from '@/components/institutionManage'
   import surveyManage from '@/components/surveyManage'
+  import surveyManageCompany from '@/components/surveyManageCompany' // 查勘机构登录只显示查勘管理
   import singleAgency from '@/components/SingleAgency'
   import channelManage from '@/components/channelManage'
-  // import childInstitutionList from '@/components/childInstitutionList'
   import axios from 'axios'
   //  import BMap from 'BMap'
 
@@ -458,6 +466,7 @@
         chinaName: '',
         userName: '',
         headerActiveOne: false,
+        isChannel: false,
         orgCode: "",
         surveyType: "1",
         mark: "1",
@@ -482,12 +491,14 @@
         getCity: "京",
         activeName: 'first',
         activeNameTwo: 'third',
+        activeNameThree: 'seven',
         caseActive: true,
         seatActive: false,
         insitituteActive: true,
         surveyActive: false,
         agencyActive: false,
         channelManageActive: false,
+        surveyCompanyActive: true,
         cityData: ['京','津','冀','晋','蒙','辽','吉','黑','沪','苏','浙','皖','闽','赣','鲁','豫','鄂','湘','粤','贵','云','藏','陕','甘','青','宁','新','琼','渝','川','桂'],
         cityModel:'',
         tuiCityArr:[],
@@ -501,6 +512,7 @@
       this.chinaName = localStorage.getItem('chinaName')
       this.userName = localStorage.getItem('userName')
       this.headerActiveOne = localStorage.getItem('setHeaderActive');
+      this.isChannel = localStorage.getItem('isChannel');
       this.insurecompanyCode = localStorage.getItem('insurecompanyCode');
       if(this.headerActiveOne == 'true'){
         this.insitituteActive = false;
@@ -508,14 +520,24 @@
         this.caseActive = true;
         this.seatActive = false;
         this.agencyActive = false;
-        this.channelManageActive = false;        
-      }else{
+        this.channelManageActive = false;    
+        this.surveyCompanyActive = false;
+      }else if (this.headerActiveOne == 'false' && this.isChannel == 'false'){
         this.insitituteActive = true;
         this.surveyActive = false;
         this.caseActive = false;
         this.seatActive = false;
         this.agencyActive = false;
-        this.channelManageActive = false;                
+        this.channelManageActive = false;          
+        this.surveyCompanyActive = false;              
+      }else {
+         this.insitituteActive = false;
+        this.surveyActive = false;
+        this.caseActive = false;
+        this.seatActive = false;
+        this.agencyActive = false;
+        this.channelManageActive = false;          
+        this.surveyCompanyActive = true;             
       }
 
     },
@@ -527,21 +549,24 @@
           this.insitituteActive = false;
           this.surveyActive = false;
           this.agencyActive = false;
-          this.channelManageActive = false;                  
+          this.channelManageActive = false;            
+        this.surveyCompanyActive = false;                
         }else if(this.activeName == "second"){
           this.caseActive = false;
           this.seatActive = true;
           this.insitituteActive = false;
           this.surveyActive = false;
           this.agencyActive = false;
-          this.channelManageActive = false;                  
+          this.channelManageActive = false;     
+        this.surveyCompanyActive = false;                       
         }else if(this.activeName == 'five'){
           this.caseActive = false;
           this.seatActive = false;
           this.insitituteActive = false;
           this.surveyActive = false;
           this.agencyActive = true;
-          this.channelManageActive = false;                  
+          this.channelManageActive = false;         
+        this.surveyCompanyActive = false;                   
         }
       },
       "activeNameTwo"(){
@@ -552,13 +577,15 @@
           this.surveyActive = false;
           this.agencyActive = false;
           this.channelManageActive = false;          
+        this.surveyCompanyActive = false;
         }else  if(this.activeNameTwo == 'four'){
           this.caseActive = false;
           this.seatActive = false;
           this.insitituteActive = false;
           this.surveyActive = true;
           this.agencyActive = false;
-          this.channelManageActive = false;          
+          this.channelManageActive = false; 
+        this.surveyCompanyActive = false;                   
         }else if(this.activeNameTwo == 'six') {
           this.caseActive = false;
           this.seatActive = false;
@@ -566,8 +593,21 @@
           this.surveyActive = false;
           this.agencyActive = false;
           this.channelManageActive = true;
+        this.surveyCompanyActive = false;          
+        }
+      },
+      'activeNameThree'() {
+        if(this.activeNameThree == 'seven'){
+          this.caseActive = false;
+          this.seatActive = false;
+          this.insitituteActive = false;
+          this.surveyActive = false;
+          this.agencyActive = false;
+          this.channelManageActive = false;
+          this.surveyCompanyActive = true;    
         }
       }
+
     },
     methods: {
       cityFocus(){
@@ -658,7 +698,9 @@
               localStorage.removeItem("signSeatData");//坐席信息
               localStorage.removeItem("insurecompanyCode");//坐席信息
               localStorage.removeItem("userName");//坐席信息
-
+              localStorage.removeItem('institutionInfo'); // 渠道机构信息
+              localStorage.removeItem('isChannel'); // 渠道机构信息
+              // localStorage.clear();
               //清除缓存
               this.$router.push({path:"/"})
             }else{
@@ -955,7 +997,8 @@
       institutionManage,
       surveyManage,
       singleAgency,
-      channelManage
+      channelManage,
+      surveyManageCompany
     },
   }
 
