@@ -23,10 +23,20 @@ export default {
 }
 .ruleForm .el-input__suffix {
   top: 0;
+  display: none;
 }
 .ruleForm .el-form-item {
   width: 33.33%;
   float: left;
+  position: relative;
+}
+.ruleForm .el-icon-view {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  font-size: 20px;
+  transform: translateY(-50%);
+  cursor: pointer;
 }
 .ruleForm .el-button  {
   padding: 12px;
@@ -82,5 +92,20 @@ export default {
 }
 .child-institution-list .create span{
   color: #fff;
+}
+.el-table td, .el-table th.is-leaf {
+  border-bottom: 0;
+}
+.el-table--border, .el-table--group {
+  border: none;
+  border-left: 1px solid #ebeef5;
+}
+.el-table thead th{
+  background: #ECF8F5;
+  padding: 2px 0;
+}
+.el-table thead th div {
+  color: #2EAB3B;
+  font-weight: bold;
 }
 </style>

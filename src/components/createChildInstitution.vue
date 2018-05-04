@@ -44,7 +44,9 @@
         <el-input v-model.trim="ruleForm.account" placeholder="请输入机构账号"></el-input>
     </el-form-item>
     <el-form-item label="密码" prop="password">
-        <el-input type="password" v-model.trim="ruleForm.password" placeholder="请输入机构密码"></el-input>
+        <el-input type="password" v-model.trim="ruleForm.password" placeholder="请输入机构密码"  v-show='!isShowPwd'></el-input>
+        <el-input type="text" v-model.trim="ruleForm.password" placeholder="请输入机构密码" v-show='isShowPwd'></el-input>
+        <span class="el-icon-view" @click='showPwd' v-if="!userid"></span>
     </el-form-item>
     <el-form-item label="账号状态" prop="status">
         <el-select v-model="ruleForm.status" value-key="value" placeholder="请选择账号状态">
@@ -125,7 +127,7 @@ export default {
           return callback(new Error('请输入密码'));
         }else {
             if (!(/^[0-9a-zA-Z]{6,25}$/g).test(value)) {
-                callback(new Error('长度在6到25个字符,只能包含数字和英文大小写'));
+                callback(new Error('6到25个字符,只能包含数字和字母大小写'));
             } else {
                 callback();
             }
@@ -137,7 +139,7 @@ export default {
           return callback(new Error('请输入账号'));
         }else {
             if (!(/^[0-9a-zA-Z]{4,20}$/g).test(value)) {
-                callback(new Error('长度在4到20个字符,只能包含数字和英文大小写'));
+                callback(new Error('4到20个字符,只能包含数字和字母大小写'));
             } else {
                 callback();
             }
@@ -147,6 +149,7 @@ export default {
     return {
         ajaxUrl: '/boot-pub-survey-manage',        
         noQRcode: '',
+        isShowPwd: false,
       companys: [],
       provinces: [],
       citys: [],
@@ -383,7 +386,9 @@ export default {
         this.ruleForm.code = guid();
     },
 
-
+    showPwd () {
+        this.isShowPwd = !this.isShowPwd;
+    },
     // 生成二维码
     setQRcode() {
         if(!this.ruleForm.code) {

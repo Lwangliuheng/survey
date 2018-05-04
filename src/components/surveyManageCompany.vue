@@ -86,14 +86,14 @@
                 <span class="spanInfo">所属省份</span>
                 <select v-model="insurecode" class="selectBox">
                   <option value="">请选择所属省份</option>
-                  <option v-for="item in addprovincesOption" :value="item.id">{{item.name}}</option>
+                  <option v-for="(item,index) in addprovincesOption" :value="item.id" :key='index'>{{item.name}}</option>
                 </select>
               </div>
               <div class="addinsitituteInput">
                 <span class="spanInfo">所属城市</span>
                 <select v-model="citycode" class="selectBox">
                   <option value="">请选择所属城市</option>
-                  <option v-for="item in addCityOPtion" :value="item.id">{{item.name}}</option>
+                  <option v-for="(item,index) in addCityOPtion" :value="item.id" :key='index'>{{item.name}}</option>
                 </select>
               </div>
               <div class="addinsitituteInput">
