@@ -69,7 +69,8 @@
         </el-select>
     </el-form-item>
     <el-form-item label="渠道价格" prop="price">
-        <el-input v-model.trim="ruleForm.price" placeholder="请输入渠道价格" style="width:92%;"></el-input>&nbsp;元
+        <el-input v-model.trim="ruleForm.price" placeholder="请输入渠道价格"></el-input>
+        <b style='position:absolute;top:0;right: 15px;'>元</b>
     </el-form-item>
     <el-form-item label="邀请码" prop="code" style="float:right;" v-if="!userid">
         <el-input readonly v-model="ruleForm.code" style="width:70%" placeholder="点击生成机构代码"></el-input>
@@ -77,7 +78,7 @@
     </el-form-item>
     <div style="width:100%;overflow:hidden;">    
         <el-form-item prop='qrcode' style="float:right;overflow:hidden;text-align:center;">
-            <div class="image">
+            <div class="image" v-loading="loading">
                 <span class="el-icon-picture-outline" v-show="!ruleForm.qrcodeUrl"></span>
                 <img :src="ruleForm.qrcodeUrl" alt="">
             </div>
@@ -147,6 +148,7 @@ export default {
       };
 
     return {
+        loading: false,
         ajaxUrl: '/boot-pub-survey-manage',        
         noQRcode: '',
         isShowPwd: false,
@@ -395,11 +397,13 @@ export default {
             });
 
         }else {
+            this.loading = true;
             axios.post(this.ajaxUrl+ '/pubsurvey/manage/rider/department/v1/generateqrcode',{
                 invitecode: this.ruleForm.code
             }).then ( res => {
                 if(res.data.rescode == 200){
                     this.ruleForm.qrcodeUrl = res.data.data.qrcodeurl;
+                    this.loading = false;
                 }else {
                     this.$message.error('生成二维码失败:'+res.data.resdes)
                 }
