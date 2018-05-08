@@ -914,13 +914,18 @@
             "mark": this.sign,
           }
           // 如果是创建假单
-          if(this.isFakeOrder){
-            paramData.promotionFlag = 1;
+          if(this.isFakeOrder){ 
+            paramData.promotionFlag = 0;
             // 是否可以抢到单
-            if(this.isGetOrder){
+            if(this.isGetOrder){ // 可以抢到
               paramData.getFlag = 1;
+            }else {
+              paramData.getFlag = 0;              
             }
 
+          }else { // 如果是创建真单
+            paramData.promotionFlag = 1;
+            paramData.getFlag = 0;            
           }
           console.log('啊啊啊啊啊啊啊啊',paramData);
 
