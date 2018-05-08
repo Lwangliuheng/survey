@@ -384,6 +384,10 @@
                   <option value="3">闪送</option>
                 </select>
               </div>
+              <div class="addinsitituteInput" v-if="isFakeOrder">
+                <span class="addinsitituteSpan">可以抢单</span>
+                <input type="checkbox" v-model="isGetOrder">
+              </div>
               <div class="addinsitituteInput addinsitituteInputTe">
                 <textarea class="feed_textarea" v-model="textareaValue"  placeholder="请填写匹配信息" >
                 </textarea>
@@ -456,7 +460,8 @@
         <span class="userName">{{chinaName}}</span>
         <span class="userInsitu">({{userName}})</span>
         <span class="signOut" @click="clickSignOut">退出</span>
-        <span class="creatCase" v-if="headerActiveOne == 'true'" @click="openCreatCase">创建案件</span>
+        <span class="creatCase" v-if="headerActiveOne == 'true'" @click="openCreatCase(1)" style="margin-right:5px;">创建假单</span>
+        <span class="creatCase" v-if="headerActiveOne == 'true'" @click="openCreatCase(2)">创建案件</span>
       </div>
     </div>
     <case-manage v-if="caseActive"></case-manage>
@@ -481,11 +486,13 @@
     data(){
       return{
         textareaValue:"",
+        isGetOrder: false, // 是否可以抢到假单
         zcState:false,
         zhongcheActive: true,
         chinaName: '',
         userName: '',
         headerActiveOne: false,
+        isFakeOrder: false, // 创建真单还是假单
         orgCode: "",
         surveyType: "1",
         mark: "1",
@@ -776,13 +783,19 @@
           }
         }
       },
-      openCreatCase(){//打开创建案件
+      openCreatCase(n){//打开创建案件
+        if(n == 1){   // n 为1 创建假单  2为创建真单
+          this.isFakeOrder = true;
+        }else if(n == 2){
+          this.isFakeOrder = false;
+        }
+
         this.cityModel = '';
         this.tuiCityArr = [];
         this.tuiCompanyArr = [];
         this.companyModel = '';
         document.getElementsByClassName('scrollBox')[0].scrollTop = '100px';
-        console.log( document.getElementsByClassName('scrollBox')[0].scrollTop)
+        // console.log( document.getElementsByClassName('scrollBox')[0].scrollTop)
         $(".radio__inner").addClass("isChecked");
         this.mark = "1";
         this.surveyType = "1";
@@ -811,7 +824,7 @@
                     this.orgOption.unshift(zhognche)
                   }
                 }
-                console.log(this.orgOption)
+                // console.log(this.orgOption)
               }
               for(let i in this.orgOption){
                 if(i== 0){
@@ -832,7 +845,26 @@
           })
       },
       closCreatDiolag(){
-        $(".creatCaseDialog").addClass('hide')
+        $(".creatCaseDialog").addClass('hide');
+
+        // 清空输入框
+            this.phoneno = '';
+            this.getCity= '京';
+            this.licensenoTwo = '';
+            this.person = '';
+            this.reportno = '';
+            this.company = '';
+            this.companyName = '';
+            this.city = '';
+            this.cityName = '';
+            this.orgCode = '';
+            this.surveyType = '1';
+            this.accidentaddress = '';
+            this.lng = '';
+            this.lat = '';
+            this.sign = '1';
+            this.textareaValue = '';
+            this.isGetOrder = false;
       },
       creatNewCase() {//确定创建案件
         //this.companyName = $("#companyName").find("option:selected").text();
@@ -881,6 +913,17 @@
             "lat": this.lat,
             "mark": this.sign,
           }
+          // 如果是创建假单
+          if(this.isFakeOrder){
+            paramData.promotionFlag = 1;
+            // 是否可以抢到单
+            if(this.isGetOrder){
+              paramData.getFlag = 1;
+            }
+
+          }
+          console.log('啊啊啊啊啊啊啊啊',paramData);
+
           axios.post(this.ajaxUrl+"/pub/survey/v1/action",paramData)
             .then(response => {
               if(response.data.rescode == 200){
