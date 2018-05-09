@@ -170,6 +170,7 @@
             .then(response => {
               if(response.data.rescode == 200){
                 console.log(response.data)
+                console.log(response.data.data.cityOrgs,"机构")
                 this.cityOptions = response.data.data.citys;
                 this.cityOrgsOption = response.data.data.cityOrgs;
               }else{
@@ -232,7 +233,8 @@
           for(let i in this.cityOrgsOption){
             if(this.citycode == this.cityOrgsOption[i].cityCode){
               for(let j in this.cityOrgsOption[i].orgs){
-                if(this.compnaycode = this.cityOrgsOption[i].orgs[j].orgCode){
+      
+                if(this.compnaycode == this.cityOrgsOption[i].orgs[j].orgCode){
                   var orgName = this.cityOrgsOption[i].orgs[j].orgName;
                 }
               }
@@ -244,7 +246,7 @@
               "cityCode": this.citycode,
               "cityName": cityName,
               "citycode": this.citycode,
-              "orgCode": this.orgCode,
+              "orgCode": this.compnaycode,
               "orgName": orgName
           };
            var url = '/selfhelp/org/v1/save';
