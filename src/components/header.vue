@@ -61,7 +61,7 @@
 
   .creatCaseDialogBox, .cityDialogBox,.AdressDialogBox{
     width: 38%;
-    margin: 6vh auto;
+    margin: 3vh auto;
     background: #fff;
     padding: 20px;
     position: relative;
@@ -83,7 +83,7 @@
 
   .creatCaseDialog .scrollBox{
     /*overflow-y: scroll;*/
-    max-height: 60vh;
+   /* max-height: 60vh;*/
   }
   .imgBox img{
     height: 68px;
@@ -265,6 +265,33 @@
     color:#fff;
     background:#2EAB3B;
   }
+  .intelligentMatch{
+    border:1px solid green;
+    border-radius: 10px;
+    background-color: green;
+    color:#fff;
+    text-align: center;
+    line-height: 28px;
+    height:30px;
+    cursor:pointer;
+   margin-top:10px;
+   float:right;
+   font-size:13px !important;
+  }
+  .feed_textarea{
+    width:100%;
+    resize: none;
+    height: 70px;
+    max-height: 70px;
+    border:1px solid #dddddd;
+    border-radius: 10px;
+    padding:3px 3px;
+    text-indent:2px;
+    font-size: 15px;
+  }
+  .addinsitituteInputTe{
+    overflow: hidden;
+  }
 </style>
 <template>
   <div>
@@ -357,6 +384,15 @@
                   <option value="3">闪送</option>
                 </select>
               </div>
+              <div class="addinsitituteInput" v-if="isFakeOrder">
+                <span class="addinsitituteSpan">可以抢单</span>
+                <input type="checkbox" v-model="isGetOrder">
+              </div>
+              <div class="addinsitituteInput addinsitituteInputTe">
+                <textarea class="feed_textarea" v-model="textareaValue"  placeholder="请填写匹配信息" >
+                </textarea>
+                <span class="addinsitituteSpan intelligentMatch" @click="intelligentMatchClick">智能匹配</span>
+              </div>
               <!--<div class="addinsitituteInput">-->
               <!--<span class="radio__inner" @click="checkRadio"></span>-->
               <!--<span style="margin-left:6px;">只派坐席</span>-->
@@ -407,7 +443,7 @@
             </el-tab-pane>
             <el-tab-pane  label="坐席管理" name="second">
             </el-tab-pane>
-            <el-tab-pane  label="派单机构" name="five">
+            <el-tab-pane  label="派单机构" name="five"  v-if="zcState == 'true'">
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -433,7 +469,8 @@
         <span class="userName">{{chinaName}}</span>
         <span class="userInsitu">({{userName}})</span>
         <span class="signOut" @click="clickSignOut">退出</span>
-        <span class="creatCase" v-if="headerActiveOne == 'true'" @click="openCreatCase">创建案件</span>
+        <span class="creatCase" v-if="headerActiveOne == 'true'" @click="openCreatCase(1)" style="margin-right:5px;">创建假单</span>
+        <span class="creatCase" v-if="headerActiveOne == 'true'" @click="openCreatCase(2)">创建案件</span>
       </div>
     </div>
     <case-manage v-if="caseActive"></case-manage>
@@ -462,11 +499,15 @@
   export default {
     data(){
       return{
+        textareaValue:"",
+        isGetOrder: false, // 是否可以抢到假单
+        zcState:false,
         zhongcheActive: true,
         chinaName: '',
         userName: '',
         headerActiveOne: false,
         isChannel: false,
+        isFakeOrder: false, // 创建真单还是假单
         orgCode: "",
         surveyType: "1",
         mark: "1",
@@ -513,6 +554,8 @@
       this.userName = localStorage.getItem('userName')
       this.headerActiveOne = localStorage.getItem('setHeaderActive');
       this.isChannel = localStorage.getItem('isChannel');
+      this.zcState = localStorage.getItem('zcState');
+      // alert(this.zcState)
       this.insurecompanyCode = localStorage.getItem('insurecompanyCode');
       if(this.headerActiveOne == 'true'){
         this.insitituteActive = false;
@@ -610,6 +653,59 @@
 
     },
     methods: {
+      //获取经纬度
+      getLogLat(value){
+        const that = this;
+        var myGeo = new BMap.Geocoder();
+        // 将地址解析结果显示在地图上,并调整地图视野
+        myGeo.getPoint(value, function(point){
+          if (point) {
+            console.log(point,"获取经纬度")
+            that.lng = point.lng;
+            that.lat = point.lat;
+          }else{
+            alert("您选择地址没有解析到结果!");
+          }
+        });
+      },
+      //智能匹配事件
+      intelligentMatchClick(e){
+        if(this.textareaValue.length == 0){
+            this.open4("请输入智能匹配信息")
+            return
+        };
+        var paramData = {
+          content:this.textareaValue
+        }
+       console.log(this.textareaValue)
+          axios.post(this.ajaxUrl+"/intelligent_match/v1/match",paramData)
+          .then(response => {
+            if(response.data.rescode == 200){
+               this.phoneno = response.data.data.phoneno;
+               this.licensenoTwo = response.data.data.licenseno;
+               this.person = response.data.data.person;
+               this.reportno = response.data.data.reportno;
+               //事故地点详情
+               this.accidentaddress = response.data.data.accidentaddress;
+               //获取经纬度
+               this.getLogLat(this.accidentaddress);
+               this.city = response.data.data.city;
+               this.cityModel = response.data.data.cityName;
+               this.cityName = response.data.data.cityName;
+               this.company = response.data.data.company;
+               this.companyModel = response.data.data.companyName;
+               this.companyName = response.data.data.companyName;
+               console.log(response.data)
+            }else{
+             
+            }
+          }, err => {
+            console.log(err);
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      },
       cityFocus(){
         this.cityOption.forEach((i,n)=>{
 
@@ -753,13 +849,19 @@
           }
         }
       },
-      openCreatCase(){//打开创建案件
+      openCreatCase(n){//打开创建案件
+        if(n == 1){   // n 为1 创建假单  2为创建真单
+          this.isFakeOrder = true;
+        }else if(n == 2){
+          this.isFakeOrder = false;
+        }
+
         this.cityModel = '';
         this.tuiCityArr = [];
         this.tuiCompanyArr = [];
         this.companyModel = '';
         document.getElementsByClassName('scrollBox')[0].scrollTop = '100px';
-        console.log( document.getElementsByClassName('scrollBox')[0].scrollTop)
+        // console.log( document.getElementsByClassName('scrollBox')[0].scrollTop)
         $(".radio__inner").addClass("isChecked");
         this.mark = "1";
         this.surveyType = "1";
@@ -788,7 +890,7 @@
                     this.orgOption.unshift(zhognche)
                   }
                 }
-                console.log(this.orgOption)
+                // console.log(this.orgOption)
               }
               for(let i in this.orgOption){
                 if(i== 0){
@@ -809,7 +911,26 @@
           })
       },
       closCreatDiolag(){
-        $(".creatCaseDialog").addClass('hide')
+        $(".creatCaseDialog").addClass('hide');
+
+        // 清空输入框
+            this.phoneno = '';
+            this.getCity= '京';
+            this.licensenoTwo = '';
+            this.person = '';
+            this.reportno = '';
+            this.company = '';
+            this.companyName = '';
+            this.city = '';
+            this.cityName = '';
+            this.orgCode = '';
+            this.surveyType = '1';
+            this.accidentaddress = '';
+            this.lng = '';
+            this.lat = '';
+            this.sign = '1';
+            this.textareaValue = '';
+            this.isGetOrder = false;
       },
       creatNewCase() {//确定创建案件
         //this.companyName = $("#companyName").find("option:selected").text();
@@ -858,6 +979,22 @@
             "lat": this.lat,
             "mark": this.sign,
           }
+          // 如果是创建假单
+          if(this.isFakeOrder){ 
+            paramData.promotionFlag = 0;
+            // 是否可以抢到单
+            if(this.isGetOrder){ // 可以抢到
+              paramData.getFlag = 1;
+            }else {
+              paramData.getFlag = 0;              
+            }
+
+          }else { // 如果是创建真单
+            paramData.promotionFlag = 1;
+            paramData.getFlag = 0;            
+          }
+          console.log('啊啊啊啊啊啊啊啊',paramData);
+
           axios.post(this.ajaxUrl+"/pub/survey/v1/action",paramData)
             .then(response => {
               if(response.data.rescode == 200){

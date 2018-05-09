@@ -14,6 +14,7 @@ module.exports = {
         // target: 'http://192.168.1.140:8080',      // 志猛个人服务器
         // target: 'http://192.168.1.154:9001',      // 和鹏个人服务器
         // target: 'http://192.168.1.18:8080',//元鹏
+        // target: 'http://192.168.1.27:9099',//白杰
         // target: 'https://chakan.zhongchebaolian.com', // 生产
         target: 'https://survey.zhongchebaolian.com', // 测试
         changeOrigin: true,

@@ -165,6 +165,7 @@
   export default {
     data() {
       return {
+        zcState:false,
         imgUrl: '',
         username: "",
         valicode: "",
@@ -247,6 +248,17 @@
                   localStorage.setItem('userName',response.data.data.user.userName)
                   localStorage.setItem('orgcode',response.data.data.user.orgcode);
                   localStorage.setItem('insurecompanyCode',response.data.data.org.insurecompanyCode);
+
+                  //中车登录判断
+                  if(response.data.data.org.insurecompanyCode == 111111111111){
+                       this.zcState = true;
+                       localStorage.setItem('zcState',this.zcState)
+                  }else{
+                       this.zcState = false;
+                       localStorage.setItem('zcState',this.zcState)
+                  }
+                  console.log(response.data.data.org.insurecompanyCode,"中车code")
+                              
                   var insititueName = 0,caseNum = 0, isChannel = false; // 渠道管理;
                   if(response.data.data.user.workertype == '3'){           
                     isChannel = true;

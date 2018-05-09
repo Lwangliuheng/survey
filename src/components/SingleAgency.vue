@@ -68,9 +68,9 @@
             <th>
               创建时间
             </th>
-            <th>
+            <!-- <th>
               操作
-            </th>
+            </th> -->
           </tr>
           </thead>
           <tbody>
@@ -80,7 +80,7 @@
             <td>{{item.cityName}}</td>
             <td>{{item.orgName}}</td>
             <td>{{item.createTime}}</td>
-            <td ><span class="listView" @click="deletItem(item.recordId)">删除</span></td>
+           <!--  <td ><span class="listView" @click="deletItem(item.recordId)">删除</span></td> -->
           </tr>
           </tbody>
         </table>
