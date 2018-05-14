@@ -205,6 +205,7 @@
       },
       open2() {
         this.$message({
+          showClose: true,          
           message: '登陆成功',
           type: 'success'
         });
