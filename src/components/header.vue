@@ -409,6 +409,8 @@
             </el-tab-pane>
             <el-tab-pane  label="派单机构" name="five"  v-if="zcState == 'true'">
             </el-tab-pane>
+            <el-tab-pane  label="理赔指引" name="eight">
+            </el-tab-pane>
           </el-tabs>
         </div>
         <div class="menu" v-else @click="goInsitituList">
@@ -432,6 +434,7 @@
     <institution-manage v-if="insitituteActive"></institution-manage>
     <survey-manage v-if="surveyActive"></survey-manage>
     <single-agency v-if="agencyActive"></single-agency>
+    <claim-guide v-if="claimActive"></claim-guide>
   </div>
 
 </template>
@@ -442,6 +445,7 @@
   import institutionManage from '@/components/institutionManage'
   import surveyManage from '@/components/surveyManage'
   import singleAgency from '@/components/SingleAgency'
+  import claimGuide from '@/components/claimGuide'
   import axios from 'axios'
   //  import BMap from 'BMap'
 
@@ -482,6 +486,7 @@
         insitituteActive: true,
         surveyActive: false,
         agencyActive: false,
+        claimActive: false,
         cityData: ['京','津','冀','晋','蒙','辽','吉','黑','沪','苏','浙','皖','闽','赣','鲁','豫','鄂','湘','粤','贵','云','藏','陕','甘','青','宁','新','琼','渝','川','桂'],
         cityModel:'',
         tuiCityArr:[],
@@ -521,18 +526,28 @@
           this.insitituteActive = false;
           this.surveyActive = false;
           this.agencyActive = false;
+          this.claimActive = false;
         }else if(this.activeName == "second"){
           this.caseActive = false;
           this.seatActive = true;
           this.insitituteActive = false;
           this.surveyActive = false;
           this.agencyActive = false;
+          this.claimActive = false;          
         }else if(this.activeName == 'five'){
           this.caseActive = false;
           this.seatActive = false;
           this.insitituteActive = false;
           this.surveyActive = false;
           this.agencyActive = true;
+          this.claimActive = false;     
+        }else if(this.activeName == 'eight'){
+          this.claimActive = true;
+          this.caseActive = false;
+          this.seatActive = false;
+          this.insitituteActive = false;
+          this.surveyActive = false;
+          this.agencyActive = false;
         }
       },
       "activeNameTwo"(){
@@ -930,6 +945,7 @@
       institutionManage,
       surveyManage,
       singleAgency,
+      claimGuide
     },
   }
 
