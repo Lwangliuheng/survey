@@ -497,7 +497,7 @@
       this.headerActiveOne = localStorage.getItem('setHeaderActive');
       this.zcState = localStorage.getItem('zcState');
       // alert(this.zcState)
-      this.insurecompanyCode = localStorage.getItem('insurecompanyCode');
+      this.insurecompanyCode = localStorage.getItem('orgcode');
       if(this.headerActiveOne == 'true'){
         this.insitituteActive = false;
         this.surveyActive = false;
@@ -715,23 +715,19 @@
                 }
               }
               this.orgOption= response.data.data.org;
-              var zhognche = {}
-              if(this.insurecompanyCode == 111111111111){
-                this.zhongcheActive = false;
-                for(let i in this.orgOption){
-                  if(this.orgOption[i].insurecompanyCode == 111111111111){
-                    zhognche = this.orgOption[i];
-                    this.removeArr(this.orgOption,this.orgOption[i])
-                    this.orgOption.unshift(zhognche)
+
+              // 把当前登录机构排到第一位
+              let defaultCompany = '';
+              // console.log('ssssssssssßßß',this.insurecompanyCode)
+              this.orgOption.forEach( (item,index,arr) => {
+                  if(item.code == this.insurecompanyCode){
+                    defaultCompany = arr.splice(index,1);
                   }
-                }
-                console.log(this.orgOption)
-              }
-              for(let i in this.orgOption){
-                if(i== 0){
-                  this.orgCode = this.orgOption[i].code;
-                }
-              }
+              })
+              this.orgOption.unshift(defaultCompany[0]);
+              // 默认选中当前登录机构
+              this.orgCode = this.insurecompanyCode;
+              
             }else{
               if(response.data.rescode == "300"){
                 this.$router.push({path:"/"})
