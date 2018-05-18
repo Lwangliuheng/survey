@@ -835,7 +835,7 @@
     z-index: 100;
   }
   .map_wrap{
-    margin-top: 50px;
+    margin-top: 40px;
     margin-left: 125px;
     border-left: 1px solid #ccc;
   }
@@ -871,12 +871,12 @@
   }
 
   .creatCaseDialogBox{
-    width: 60%;
+    width: 40%;
     margin: 3vh auto;
     background: #fff;
     padding: 20px;
     position: relative;
-    min-height: 550px;
+    min-height: 450px;
   }
  .closCreatDiolag{
     font-size: 40px;
