@@ -95,60 +95,14 @@
       <table class="table" border="0" cellspacing="0" cellpadding="0" style="border-top: 1px solid #bbb;">
         <thead>
         <tr>
-          <!-- <th style="border-left:1px solid #bbb;">
-            编号
-          </th>
-          <th>
-            报案人车牌号
-          </th>
-          <th>
-            报案人姓名
-          </th>
-          <th>
-            报案人手机号
-          </th>
-          <th style="width:16%;">
-            保险公司
-          </th>
-          <th style="width:12%;">
-           事故时间
-          </th>
-          <th style="width:18%;">
-            事故地点
-          </th>
-          <th>
-            案件状态
-          </th>
-          <th>
-            视频发起次数
-          </th>
-          <th>
-            操作
-          </th> -->
-          <th style="border-left:1px solid #bbb;">
-            编号
-          </th>
-          <th>
-            车牌号
-          </th>
-          <th>
-            车主姓名
-          </th>
-          <th style="width:20%;">
-            车主电话
-          </th>
-          <th style="width:16%;">
-            精确位置
-          </th>
-          <th style="width:12%;">
-           当前状态
-          </th>
-          <th style="width:12%;">
-            骑手
-          </th>
-          <th>
-            操作
-          </th>
+          <th style="border-left:1px solid #bbb;">编号</th>
+          <th>车牌号</th>
+          <th>车主姓名</th>
+          <th style="width:20%;">车主电话</th>
+          <th style="width:16%;">精确位置</th>
+          <th style="width:12%;">当前状态</th>
+          <th style="width:12%;">骑手</th>
+          <th>操作</th>
         </tr>
         </thead>
         <tbody>
@@ -167,13 +121,13 @@
           <td>{{item.licenseNo}}</td>
           <td>{{item.reporterName}}</td>
 
-          <td>{{item.reportPhone}} <p class="callPhone" @click="sendMessages($event,item.surveyNo)"><img src="" class="callPhone_img"></p><p class="callPhone" @click="callPhone($event,item.reportPhone)"><img src="" class="callPhone_img"></p></td>
+          <td>{{item.reportPhone}} <p class="callPhone" @click="sendMessages($event,item.surveyNo)"><img src="../images/email.png" class="callPhone_img"></p><p class="callPhone" @click="callPhone($event,item.reportPhone)"><img src="../images/phone.png" class="callPhone_img"></p></td>
 
-          <td class="green_word" v-if="item.isUploadedStatus">{{item.name}}<p class="callPhone" @click="sendPlace($event,item.surveyNo,item.lat,item.lng)"><img src="" class="callPhone_img"></p></td>
-          <td class="gray_word" v-if="!item.isUploadedStatus">{{item.name}}<p class="callPhone" @click="sendPlace($event,item.surveyNo,item.lat,item.lng)"><img src="" class="callPhone_img"></p></td>
+          <td class="green_word" v-if="item.isUploadedStatus">{{item.name}}<p class="callPhone" @click="sendPlace($event,item.surveyNo,item.lat,item.lng)"><img src="../images/have_location.png" class="callPhone_img"></p></td>
+          <td class="gray_word" v-if="!item.isUploadedStatus">{{item.name}}<p class="callPhone" @click="sendPlace($event,item.surveyNo,item.lat,item.lng)"><img src="../images/no_location.png" class="callPhone_img"></p></td>
           <td style="width:160px;">{{item.survey}}</td>
 
-          <td>{{item.surveyorName}}<p class="callPhone" @click="callPhone($event,item.surveyorPhone)"><img src="" class="callPhone_img"></p></td>
+          <td>{{item.surveyorName}}<p class="callPhone" @click="callPhone($event,item.surveyorPhone)"><img src="../images/phone.png" class="callPhone_img"></p></td>
           <td ><span v-if="item.status == '06'" class="listAssign" @click="signSeats(item.id)">指派</span><i v-if="item.status == '06'">|</i><span  class="listView" @click="goCaseDetail(item.surveyNo,item.status)">详情</span><i>|</i><span  class="listView" @click="cancellationOrder(item.surveyNo,item.status)">取消订单</span></td>
         </tr>
         </tbody>
@@ -194,10 +148,72 @@
     <div class="creatCaseDialog" v-if="detailsStatus">
       <div class="creatCaseDialogBox">
         <span class="closCreatDiolag" @click="closCreatDiolag">×</span>
-        <div class="map_wrap">
-           <div id="allmapone">
-          </div>
-        </div>
+        <ul class="map_wrap">
+          <li class="item" v-show="caseDetail.finishTime">
+            <div class="item-time">
+              <span>{{caseDetail.finishTime.split(' ')[0]}}</span>
+              <span>{{caseDetail.finishTime.split(' ')[1]}}</span>
+            </div>
+            <img class="item-icon" src="../images/detail_done.png" alt="">
+            <div class="item-content">
+              <span>【完成查勘】</span>
+            </div>
+          </li>
+          <li class="item" v-show="caseDetail.connectTime">
+            <div class="item-time">
+              <span>{{caseDetail.connectTime.split(' ')[0]}}</span>
+              <span>{{caseDetail.connectTime.split(' ')[1]}}</span>
+            </div>
+            <img class="item-icon" src="../images/detail_address.png" alt="">
+            <div class="item-content">
+              <span>【发起视频连接】</span>
+              <span>累计次数：{{caseDetail.connectCount}}次</span>
+            </div>
+          </li>
+          <li class="item" v-show="caseDetail.actualTime">
+            <div class="item-time">
+              <span>{{caseDetail.actualTime.split(' ')[0]}}</span>
+              <span>{{caseDetail.actualTime.split(' ')[1]}}</span>
+            </div>
+            <img class="item-icon" src="../images/detail_address.png" alt="">
+            <div class="item-content">
+              <span>【到达现场】</span>
+            </div>
+          </li>
+          <li class="item" v-show="caseDetail.contactTime">
+            <div class="item-time">
+              <span>{{caseDetail.contactTime.split(' ')[0]}}</span>
+              <span>{{caseDetail.contactTime.split(' ')[1]}}</span>
+            </div>
+            <img class="item-icon" src="../images/detail_tel.png" alt="">
+            <div class="item-content">
+              <span>【已联系客户】</span>
+              <span>拨打客户电话次数：{{caseDetail.contactCount}}次</span>
+            </div>
+          </li>
+          <li class="item" v-show="caseDetail.singleTime">
+            <div class="item-time">
+              <span>{{caseDetail.singleTime.split(' ')[0]}}</span>
+              <span>{{caseDetail.singleTime.split(' ')[1]}}</span>
+            </div>
+            <img class="item-icon" src="../images/detail_rider.png" alt="">
+            <div class="item-content">
+              <span>【骑手接单】</span>
+              <span>姓名：{{caseDetail.surveyorName}}</span>
+              <span>电话：{{caseDetail.surveyorPhone}}</span>
+            </div>
+          </li>
+          <li class="item">
+            <div class="item-time">
+              <span>{{caseDetail.createTime.split(' ')[0]}}</span>
+              <span>{{caseDetail.createTime.split(' ')[1]}}</span>
+            </div>
+            <img class="item-icon" src="../images/detail_flag.png" alt="">
+            <div class="item-content">
+              <span>【创建订单】</span>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
     <case-detail v-if="caseDetailActive"></case-detail>
@@ -251,6 +267,7 @@
         tableData: [],
         totalCount: 0,
         companeyOptions: {},
+        caseDetail: {},
         organizations: [],
         pickerOptions2: {
           shortcuts: [{
@@ -676,14 +693,17 @@
           this.getCaseList()
         },
         goCaseDetail(id,orderStatus){
-            this.detailsStatus = true;
             var paramData = {
               "surveyNo": id
             }
             axios.post(this.ajaxUrl+"/published_order/v1/detail",paramData)
               .then(response => {
                 if(response.data.rescode == 200){
-                  console.log(response.data.data,"详情")
+                  console.log("详情",response.data.data)
+                  this.caseDetail = response.data.data;
+                  // 显示弹窗
+                  this.detailsStatus = true;
+
                   if(response.data.data != null){
                     var data = JSON.stringify(response.data.data)
                     localStorage.setItem("caseDetailData",data);
@@ -793,8 +813,9 @@
    margin-right:4px;
   }
   .callPhone_img{
-    width:30px;
+    width:22px;
     height:20px;
+    margin-left: 5px;
   }
   .gray_word{
     color:#666666;
@@ -814,25 +835,52 @@
     z-index: 100;
   }
   .map_wrap{
-     width: 100%;
+    margin-top: 50px;
+    margin-left: 125px;
+    border-left: 1px solid #ccc;
   }
-  #allmapone {
-     width: 100%;
-     height:500px;
-     overflow: hidden;
-     margin:0;
-    
-   }
+  .map_wrap .item{
+    width: 100%;
+    display: flex;
+    position: relative;
+    margin-left: -125px;
+    margin-top: 20px;
+  }
+
+  .map_wrap .item .item-time {
+    width: 100px;
+    text-align: center;
+  }
+  .map_wrap .item .item-time span{
+    display: block;
+    font-size: 15px;
+    line-height: 15px;
+  }
+  .map_wrap .item .item-content span{
+    display: block;
+    font-size: 15px;
+    line-height: 30px;
+  }
+
+  .map_wrap .item img{
+    width: 30px;
+    height: 30px;
+    margin: 0 20px 0 10px;
+    position: relative;
+    z-index: 99;
+  }
+
   .creatCaseDialogBox{
     width: 60%;
     margin: 3vh auto;
     background: #fff;
     padding: 20px;
     position: relative;
-    min-height: 620px;
+    min-height: 550px;
   }
  .closCreatDiolag{
-    font-size: 42px;
+    font-size: 40px;
+    line-height: 40px;
     right: 15px;
     top: 0;
     float:right;
