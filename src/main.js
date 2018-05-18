@@ -26,6 +26,10 @@ axios.interceptors.request.use(config => {
 // }else if(config.url == '/boot-pub-survey-manage/pubsurvey/manage/department/v1/14/citys'){
 //   loadinginstace = "";
 // }
+//全部案件查看详情
+if(config.url == '/boot-pub-survey-manage/pub/survey/v1/action'){
+  loadinginstace = ElementUI.Loading.service({ fullscreen: true })
+}
 if(config.url == '/boot-pub-survey-manage/pub/survey/v1/action'){
   loadinginstace = ElementUI.Loading.service({ fullscreen: true })
 }

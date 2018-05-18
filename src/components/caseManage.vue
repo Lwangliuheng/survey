@@ -1,49 +1,69 @@
 <template>
   <div class="caseManage">
     <div class="caseTab">
-      <span class="caseJiankong active" @click="tabChange">案件监控</span>
-      <span class="allCase" @click="tabChange">全部案件</span>
+      <span class="caseJiankong " v-bind:class="{ active: jianKongActive }" @click="tabChange($event,1)">案件监控</span>
+      <span class="allCase" v-bind:class="{ active: allCaseActive }" @click="tabChange($event,2)">全部案件</span>
+      <span class="allCase" v-bind:class="{ active: allsendOrders }" @click="tabChange($event,3)" v-if="zcState">全部案件</span>
       <div class="lineBox"></div>
     </div>
     <div class="manageContent">
-      <case-monitor v-if="jianKongActive"></case-monitor>
+      <case-monitor v-if="jianKongActive" ></case-monitor>
       <case-list v-if="allCaseActive"></case-list>
-
+      <order-list v-if="allsendOrders"></order-list>
     </div>
   </div>
 </template>
 <script>
   import caseList from '@/components/caseList'
+  import orderList from '@/components/orderList'
   import caseMonitor from '@/components/caseMonitor'
   export default {
+    props: ['zcState'],
     data() {
       return{
         jianKongActive: true,
-        allCaseActive: false
+        allCaseActive: false,
+        allsendOrders:false
       }
     },
     methods: {
-      tabChange(event){
-        var attributes = event.target.attributes;
-        for(var i=0;i< attributes.length;i++){
-          if(i == 1){
-            if(attributes[i].nodeValue.indexOf('caseJiankong') > -1){
-              attributes[i].nodeValue = 'caseJiankong active';
-              $(".allCase").attr("class","allCase");
-              this.jianKongActive = true;
-              this.allCaseActive = false;
-            }else  if(event.target.attributes[i].nodeValue.indexOf('allCase') > -1){
-              $(".caseJiankong").attr("class","caseJiankong");
-              attributes[i].nodeValue = 'allCase active';
-              this.jianKongActive = false;
-              this.allCaseActive = true;
-            }
-          }
-        }
+      tabChange(event,index){
+       if(index == 1){
+         this.jianKongActive = true;
+         this.allCaseActive = false;
+         this.allsendOrders = false;
+       };
+       if(index == 2){
+         this.jianKongActive = false;
+         this.allCaseActive = true;
+         this.allsendOrders = false;
+       };
+       if(index == 3){
+         this.jianKongActive = false;
+         this.allCaseActive = false;
+         this.allsendOrders = true;
+       };
+        // var attributes = event.target.attributes;
+        // for(var i = 0;i< attributes.length;i++){
+        //   if(i == 1){
+        //     if(attributes[i].nodeValue.indexOf('caseJiankong') > -1){
+        //       attributes[i].nodeValue = 'caseJiankong active';
+        //       $(".allCase").attr("class","allCase");
+        //       this.jianKongActive = true;
+        //       this.allCaseActive = false;
+        //     }else  if(event.target.attributes[i].nodeValue.indexOf('allCase') > -1){
+        //       $(".caseJiankong").attr("class","caseJiankong");
+        //       attributes[i].nodeValue = 'allCase active';
+        //       this.jianKongActive = false;
+        //       this.allCaseActive = true;
+        //     }
+        //   }
+        // }
       }
     },
     components: {
       caseList,
+      orderList,
       caseMonitor,
     },
   }

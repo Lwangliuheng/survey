@@ -473,7 +473,7 @@
         <span class="creatCase" v-if="headerActiveOne == 'true'" @click="openCreatCase(2)">创建案件</span>
       </div>
     </div>
-    <case-manage v-if="caseActive"></case-manage>
+    <case-manage v-if="caseActive" v-bind:zc-state="zcState"></case-manage>
     <seat-manage v-if="seatActive"></seat-manage>
     <institution-manage v-if="insitituteActive"></institution-manage>
     <survey-manage v-if="surveyActive"></survey-manage>
