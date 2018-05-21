@@ -99,7 +99,7 @@
               enableMessage:true,//设置允许信息窗发送短息
               message:""
             };
-          content = '<div style="overflow:hidden;padding-top:20px"><p style="float:left"><span>距离事故地点还有</span><span>'+data.chang+'</span></p><p style="float:left;margin-left:10px" onClick="callPhone('+data.surveyorPhone+')"><img src="" style="width:30px;height:30px"/></p></div>'
+          content = '<div style="overflow:hidden;padding-top:20px"><p style="float:left"><span>距离事故地点还有</span><span>'+data.chang+'</span></p><p style="float:left;margin-left:10px" onClick="callPhone('+data.surveyorPhone+')"><img src="/src/images/phone.png" style="width:18px;height:19px"/></p></div>'
         };
         var infoWindow = new BMap.InfoWindow(content, opts); 
         return function getAttr(target){
