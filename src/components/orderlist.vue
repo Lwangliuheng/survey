@@ -174,7 +174,7 @@
           <td style="width:160px;">{{item.survey}}</td>
 
           <td>{{item.surveyorName}}<p class="callPhone" @click="callPhone($event,item.surveyorPhone)"><img src="" class="callPhone_img"></p></td>
-          <td ><span v-if="item.status == '06'" class="listAssign" @click="signSeats(item.id)">指派</span><i v-if="item.status == '06'">|</i><span  class="listView" @click="goCaseDetail(item.surveyNo,item.status)">详情</span><i>|</i><span  class="listView" @click="cancellationOrder(item.surveyNo,item.status)">取消订单</span></td>
+          <td ><span v-if="item.status == '06'" class="listAssign" @click="signSeats(item.id)">指派</span><i v-if="item.status == '06'">|</i><span  class="listView" @click="goCaseDetail(item.surveyNo,item.status)">详情</span><i v-if="item.status == '07' || item.status == '06'">|</i><span  class="listView" @click="cancellationOrder(item.surveyNo,item.status)" v-if="item.status == '07' || item.status == '06'">取消订单</span></td>
         </tr>
         </tbody>
       </table>
@@ -370,6 +370,9 @@
            var paramData = {
             "surveyNo": phone
           }
+          // var paramData = {
+          //   "surveyNo": "133db7fb63594e91b6a3573bcf36949d"
+          // }
           axios.post(this.ajaxUrl+"/published_order/v1/sendMsg",paramData)
             .then(response => {
               if(response.data.rescode == 200){
