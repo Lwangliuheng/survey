@@ -223,6 +223,7 @@ export default {
           this.cityCode = '';
           this.companyCode = '';
           this.provinceCode = '';
+          this.cityOptions = [];
           this.page = 1;
           this.init();
       },
