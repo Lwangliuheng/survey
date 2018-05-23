@@ -99,7 +99,7 @@
               enableMessage:true,//设置允许信息窗发送短息
               message:""
             };
-          content = '<div style="overflow:hidden;padding-top:20px"><p style="float:left"><span>距离事故地点还有</span><span>'+data.chang+'</span></p><p style="float:left;margin-left:10px" onClick="callPhone('+data.surveyorPhone+')"><img src="" style="width:30px;height:30px"/></p></div>'
+          content = '<div style="overflow:hidden;padding-top:20px"><p style="float:left"><span>距离事故地点还有</span><span>'+data.chang+'</span></p><p style="float:left;margin-left:10px" onClick="callPhone('+data.surveyorPhone+')"><img src="/src/images/phone.png" style="width:18px;height:19px"/></p></div>'
         };
         var infoWindow = new BMap.InfoWindow(content, opts); 
         return function getAttr(target){
@@ -146,7 +146,7 @@
         // transData.surveyorLat = 39.990;
         // transData.surveyorLng = 116.700;
         //普通查勘元
-        //transData.surveyorList = [{lng:116.600,lat:39.909},{lng:116.800,lat:39.909},{lng:116.750,lat:39.909}]
+        transData.surveyorList = [{lng:116.600,lat:39.909},{lng:116.800,lat:39.909},{lng:116.750,lat:39.909}]
         // var arr = [];
         // var obj = {};
         //接单查勘元
@@ -157,7 +157,7 @@
            obj.chang = this.chang ? this.chang:"";
           //alert(obj.chang)
            var pt = new BMap.Point(transData.surveyorLng, transData.surveyorLat);
-           var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,100));
+           var myIcon = new BMap.Icon("/src/images/jdy.png", new BMap.Size(46,44));
            //画图
            this.addMarker(pt,{icon:myIcon},obj,2);  
            
@@ -171,7 +171,7 @@
            obj.lat = item.lat;
            obj.lng = item.lng;
            var pt = new BMap.Point(item.lng, item.lat);
-           var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,100));
+           var myIcon = new BMap.Icon("/src/images/fjcky.png", new BMap.Size(46,44));
            //画图
            that.addMarker(pt,{icon:myIcon},obj,3);  
      
@@ -218,7 +218,7 @@
              }
           };
            var pt = new BMap.Point(obj.lng, obj.lat);
-           var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(200,100));
+           var myIcon = new BMap.Icon("/src/images/yh.png", new BMap.Size(45,54));
            this.map.centerAndZoom(pt, 12);
            //画图
            this.addMarker(pt,{icon:myIcon},obj,1);  
@@ -229,6 +229,7 @@
             this.map = new BMap.Map("allmapone");
             var point = new BMap.Point(116.404, 39.915);
             this.map.centerAndZoom(point, 12);
+            this.map.enableScrollWheelZoom();  
             //改造数据
            // data.surveyorLat = 39.990;
            // data.surveyorLng = 116.700;
