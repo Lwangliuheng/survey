@@ -86,13 +86,15 @@
             <div style="text-align:center;">
                 <el-button @click="setQRcode" type="success" v-if="!userid">生成二维码</el-button>
                 <el-button ref="downloadBtn" @click="downloadQRcode" type="success">下载二维码</el-button>
+                <el-button @click="setQRcode" v-if="userid" type="success">刷新二维码</el-button>
                 <!-- <a :href="ruleForm.qrcodeUrl" @click="downloadQRcode($event,ruleForm.qrcodeUrl,ruleForm.code)" :download="ruleForm.qrcodeUrl" target="_blank" class="downloadBtn">下载二维码</a> -->
             </div>
         </el-form-item>
     </div>
     <el-form-item style="float:right; width: 100%;text-align:center;" class="form-btn">
-        <el-button type="success" @click="back">取消</el-button>
-        <el-button type="success" @click="submitForm('ruleForm')">提交</el-button>
+        <el-button type="success" @click="back" v-if="!userid">取消</el-button>
+        <el-button type="success" @click="confirm" v-else>返回</el-button>
+        <el-button type="success" @click="submitForm('ruleForm')">{{buttonVal}}</el-button>
     </el-form-item>
     </el-form>
     <el-dialog
@@ -146,12 +148,24 @@ export default {
             }
         }
       };
+       var checkPrice = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('请输入渠道价格'));
+        }else {
+            if (!(/^[0-9]{1,}$/g).test(value)) {
+                callback(new Error('渠道价格必须为数字'));
+            } else {
+                callback();
+            }
+        }
+      };
 
     return {
         loading: false,
         ajaxUrl: '/boot-pub-survey-manage',        
         noQRcode: '',
         isShowPwd: false,
+        buttonVal: '提交',
       companys: [],
       provinces: [],
       citys: [],
@@ -207,7 +221,7 @@ export default {
           { required: true, message: "请选择开通省份", trigger: "change" }
         ],
         price: [
-          { required: true, message: "请输入渠道价格", trigger: "blur" }
+            {required: true, validator: checkPrice, trigger: 'blur' }                            
         ],
         person: [
           { required: true, message: "请输入联系人姓名", trigger: "blur" },
@@ -440,6 +454,8 @@ export default {
 
     // 提交表单
     submitForm(formName) {
+        if(this.buttonVal == '提交中') return;
+
       this.$refs[formName].validate(valid => {
         if (valid) {
             if(!this.ruleForm.qrcodeUrl) {
@@ -466,7 +482,8 @@ export default {
                     invitecode: ruleForm.code,
                     inviteqrcodeurl: ruleForm.qrcodeUrl
                 };
-                console.log(this.ruleForm.status)
+                // console.log(this.ruleForm.status)
+                this.buttonVal = '提交中'
                 // 如果是修改
                 if(this.userid) {
                     // 如果点击提交时，password 为初始值，则未修改，传空值，否则为修改密码，传对应值
@@ -481,7 +498,8 @@ export default {
                             this.$store.commit('setIsChannelList', true);
                             this.$store.commit('getsubmitCreateActive', true);
                         }else {
-                            this.$message.error('提交失败:'+res.data.resdes)                        
+                            this.$message.error('提交失败:'+res.data.resdes)   
+                            this.buttonVal = '提交'                                                 
                         }
                     })  
                 }else {

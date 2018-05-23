@@ -84,6 +84,9 @@ export default {
   border-left: 0;
   text-align: center;
 }
+.el-table th {
+  border-right: 0;
+}
 .el-table td {
   padding: 0;
 }
@@ -98,7 +101,8 @@ export default {
 }
 .el-table--border, .el-table--group {
   border: none;
-  border-left: 1px solid #ebeef5;
+  border: 1px solid #bbb;
+  border-top: none;
 }
 .el-table thead th{
   background: #ECF8F5;
@@ -108,4 +112,6 @@ export default {
   color: #2EAB3B;
   font-weight: bold;
 }
+
+
 </style>
