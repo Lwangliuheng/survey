@@ -120,7 +120,10 @@ export default {
         this.init();
 
         // 加载公司列表
-        axios.post(this.ajaxUrl+"/pub/survey/v1/orgcity")
+        var paramData = {
+          "action": "detail"
+        }
+        axios.post(this.ajaxUrl+"/pub/survey/v1/orgcity",paramData)
         .then( res => {
             console.log('公司',res.data.data.company)
             this.companyOptions = res.data.data.company;
