@@ -3,7 +3,7 @@
     <div class="caseTab">
       <span class="caseJiankong " v-bind:class="{ active: jianKongActive }" @click="tabChange($event,1)">案件监控</span>
       <span class="allCase" v-bind:class="{ active: allCaseActive }" @click="tabChange($event,2)">全部案件</span>
-      <span class="allCase" v-bind:class="{ active: allsendOrders }" @click="tabChange($event,3)" v-if="zcState">全部案件</span>
+      <span class="allCase" v-bind:class="{ active: allsendOrders }" @click="tabChange($event,3)" v-if="zcState">实时监控</span>
       <div class="lineBox"></div>
     </div>
     <div class="manageContent">

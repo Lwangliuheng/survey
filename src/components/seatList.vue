@@ -317,10 +317,11 @@
         caseDetailActive: false,
       }
     },
-    created(){
-    },
     mounted() {
-      this.getSeatList()
+      var that = this;
+
+      
+      this.getSeatList();
     },
     watch: {
       "editorActive": function(){

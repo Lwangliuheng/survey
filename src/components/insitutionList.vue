@@ -209,6 +209,7 @@
 </template>
 <script>
   import axios from 'axios'
+  import Bus from '../../static/bus.js'
   export default {
     data() {
       return{
@@ -268,8 +269,16 @@
     props: {
       insititutActive: Boolean
     },
+    destroyed(){
+      Bus.$off('busOrganizationManagement')
+    },
     created(){
-      this.getInsitituList();
+      var that = this;
+      Bus.$on('busOrganizationManagement',function(name){
+        // alert(name)
+        that.getInsitituList(name)
+      });
+      this.getInsitituList("");
       this.pageno = this.$store.state.insitituPageno;
       console.log(this.pageno)
     },
@@ -285,12 +294,19 @@
       open2(resdes) {
         this.$message.success(resdes);
       },
-      getInsitituList(){
+      getInsitituList(orgName){
         this.pageno = this.$store.state.insitituPageno;
-        var paramData = {
-          "pageno": this.pageno,
-          "pagesize": this.pagesize
+        if(orgName){
+             var paramData = {
+              "orgName":orgName
+             }
+        }else{
+           var paramData = {
+              "pageno": this.pageno,
+              "pagesize": this.pagesize
+           }
         }
+        
         axios.post(this.ajaxUrl+"/pubsurvey/manage/department/v1/orglist",paramData)
           .then(response => {
             if(response.data.rescode == 200){

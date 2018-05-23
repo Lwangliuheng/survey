@@ -113,11 +113,14 @@
             var time = "";
             var chang = "";
             var that = this;
+            var mapRoad = "";
             var searchComplete = function (results){
               if (transit.getStatus() != BMAP_STATUS_SUCCESS){
                 return ;
               }
               var plan = results.getPlan(0);
+              mapRoad = plan.getRoute(0);
+              
               time = plan.getDuration(true) ;  
               //alert(time)              //获取时间
               chang = plan.getDistance(true);
@@ -129,11 +132,18 @@
             };
             var transit = new BMap.DrivingRoute(this.map, {renderOptions: {map: this.map},
               onSearchComplete: searchComplete,
-              onPolylinesSet: function(){     
-              
-                
-            }});
+              onPolylinesSet: function(routes){
+                var  Polyline = mapRoad.getPolyline();
+                that.map.removeOverlay(Polyline);//清除路线
+              },
+              onMarkersSet:function(routes) {
+                  that.map.removeOverlay(routes[0].marker); //删除起点
+                  that.map.removeOverlay(routes[1].marker);//删除终点
+              }
+            });
             transit.search(point1 , point2);
+              
+              
             return {
               time:time,
               chang:chang
@@ -146,7 +156,7 @@
         // transData.surveyorLat = 39.990;
         // transData.surveyorLng = 116.700;
         //普通查勘元
-        transData.surveyorList = [{lng:116.600,lat:39.909},{lng:116.800,lat:39.909},{lng:116.750,lat:39.909}]
+        //transData.surveyorList = [{lng:116.600,lat:39.909},{lng:116.800,lat:39.909},{lng:116.750,lat:39.909}]
         // var arr = [];
         // var obj = {};
         //接单查勘元
@@ -157,7 +167,7 @@
            obj.chang = this.chang ? this.chang:"";
           //alert(obj.chang)
            var pt = new BMap.Point(transData.surveyorLng, transData.surveyorLat);
-           var myIcon = new BMap.Icon("/src/images/jdy.png", new BMap.Size(46,44));
+           var myIcon = new BMap.Icon("/static/jdy.png", new BMap.Size(42,34));
            //画图
            this.addMarker(pt,{icon:myIcon},obj,2);  
            
@@ -171,7 +181,7 @@
            obj.lat = item.lat;
            obj.lng = item.lng;
            var pt = new BMap.Point(item.lng, item.lat);
-           var myIcon = new BMap.Icon("/src/images/fjcky.png", new BMap.Size(46,44));
+           var myIcon = new BMap.Icon("/static/fjcky.png", new BMap.Size(39,38));
            //画图
            that.addMarker(pt,{icon:myIcon},obj,3);  
      
@@ -218,7 +228,7 @@
              }
           };
            var pt = new BMap.Point(obj.lng, obj.lat);
-           var myIcon = new BMap.Icon("/src/images/yh.png", new BMap.Size(45,54));
+           var myIcon = new BMap.Icon("/static/yh.png", new BMap.Size(33,40));
            this.map.centerAndZoom(pt, 12);
            //画图
            this.addMarker(pt,{icon:myIcon},obj,1);  
