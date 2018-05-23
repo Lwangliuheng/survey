@@ -48,20 +48,22 @@
         </el-table-column>
         <el-table-column
             prop="provincename"
-            label="所在省份">
+            label="所在省份"
+            width="90">
         </el-table-column>
         <el-table-column
             prop="cityname"
-            label="所在城市">
+            label="所在城市"
+            width="90">
         </el-table-column>
         <el-table-column
             prop="islocked"
             label="当前状态"
-            width="100">
+            width="90">
         </el-table-column>
         <el-table-column
             label="操作"
-            width="120">
+            width="90">
             <template slot-scope="scope">
                 <el-button style="font-size:16px;" @click="handleClick(scope.row)" type="text" class="el-icon-edit-outline"></el-button>
             </template>
