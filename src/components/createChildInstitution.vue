@@ -196,12 +196,12 @@ export default {
         orgcode: '',  // 机构代码
       ruleForm: {
         name: "",
-        company: {},
-        province: {},
+        company: '',
+        province: '',
         address: "",
         person: "",
         phone: "",
-        city: {},
+        city: '',
         account: "",
         password: "",
         status: "",
@@ -420,6 +420,9 @@ export default {
                     this.loading = false;
                 }else {
                     this.$message.error('生成二维码失败:'+res.data.resdes)
+                    setTimeout( ()=>{
+                        this.loading = false;                    
+                    },1000)
                 }
             })
         }
