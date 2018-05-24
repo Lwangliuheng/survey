@@ -264,13 +264,13 @@
       methods: {
         //查勘单状态
         stateHandling(state){
-          if(state == ""){
+          if(state == null){
             return "未发送"
           }
-          if(state == 1){
+          if(state){
             return "已签字";
           }
-          if(state == 0){
+          if(!state && state != null){
             return "已发送，未签字"
           }
         },
