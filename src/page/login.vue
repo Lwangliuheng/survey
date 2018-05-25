@@ -180,8 +180,11 @@
 
     mounted() {
       document.onkeydown = (ev) => {
-        if (ev.keyCode == 13) {
-          this.loginIn()
+        // 判断只有在登录页才能出发该事件
+        if(this.$route.path == '/'){
+          if (ev.keyCode == 13) {
+            this.loginIn()
+          }
         }
       }
 
@@ -205,6 +208,7 @@
       },
       open2() {
         this.$message({
+          showClose: true,          
           message: '登陆成功',
           type: 'success'
         });

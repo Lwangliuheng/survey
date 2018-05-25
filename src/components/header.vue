@@ -445,6 +445,8 @@
             </el-tab-pane>
             <el-tab-pane  label="派单机构" name="five"  v-if="zcState == 'true'">
             </el-tab-pane>
+            <el-tab-pane  label="理赔指引" name="eight" v-if="zcState == 'true'">
+            </el-tab-pane>
           </el-tabs>
         </div>
         <div class="menu" v-if="headerActiveOne == 'false' && isChannel == 'false'" @click="goInsitituList">
@@ -480,7 +482,7 @@
     <single-agency v-if="agencyActive"></single-agency>
     <channelManage v-if="channelManageActive"></channelManage>
     <surveyManageCompany v-if="surveyCompanyActive"></surveyManageCompany>
-
+    <claim-guide v-if="claimActive"></claim-guide>
   </div>
 
 </template>
@@ -493,6 +495,7 @@
   import surveyManageCompany from '@/components/surveyManageCompany' // 查勘机构登录只显示查勘管理
   import singleAgency from '@/components/SingleAgency'
   import channelManage from '@/components/channelManage'
+  import claimGuide from '@/components/claimGuide'
   import axios from 'axios'
   //  import BMap from 'BMap'
 
@@ -540,6 +543,7 @@
         agencyActive: false,
         channelManageActive: false,
         surveyCompanyActive: true,
+        claimActive: false,
         cityData: ['京','津','冀','晋','蒙','辽','吉','黑','沪','苏','浙','皖','闽','赣','鲁','豫','鄂','湘','粤','贵','云','藏','陕','甘','青','宁','新','琼','渝','川','桂'],
         cityModel:'',
         tuiCityArr:[],
@@ -594,6 +598,7 @@
           this.agencyActive = false;
           this.channelManageActive = false;            
         this.surveyCompanyActive = false;                
+          this.claimActive = false;
         }else if(this.activeName == "second"){
           this.caseActive = false;
           this.seatActive = true;
@@ -602,6 +607,7 @@
           this.agencyActive = false;
           this.channelManageActive = false;     
         this.surveyCompanyActive = false;                       
+          this.claimActive = false;          
         }else if(this.activeName == 'five'){
           this.caseActive = false;
           this.seatActive = false;
@@ -610,6 +616,14 @@
           this.agencyActive = true;
           this.channelManageActive = false;         
         this.surveyCompanyActive = false;                   
+          this.claimActive = false;     
+        }else if(this.activeName == 'eight'){
+          this.claimActive = true;
+          this.caseActive = false;
+          this.seatActive = false;
+          this.insitituteActive = false;
+          this.surveyActive = false;
+          this.agencyActive = false;
         }
       },
       "activeNameTwo"(){
@@ -888,14 +902,12 @@
                   if(item.code == this.insurecompanyCode){
                     defaultCompany = arr.splice(index,1);
                   }
-              })
-
+              });
               console.log('defaultCompany',defaultCompany);
               this.orgOption.unshift(defaultCompany[0]);
               
               // 默认选中当前登录机构
               this.orgCode = this.insurecompanyCode;
-
             }else{
               if(response.data.rescode == "300"){
                 this.$router.push({path:"/"})
@@ -1134,7 +1146,8 @@
       surveyManage,
       singleAgency,
       channelManage,
-      surveyManageCompany
+      surveyManageCompany,
+      claimGuide
     },
   }
 

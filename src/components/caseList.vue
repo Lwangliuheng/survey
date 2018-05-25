@@ -121,6 +121,9 @@
           <th>
             视频发起次数
           </th>
+           <th>
+            查勘单状态
+          </th>
           <th>
             操作
           </th>
@@ -137,6 +140,7 @@
           <td>{{item.accidentAddress}}</td>
           <td>{{item.survey}}</td>
           <td>{{item.videoConnectRequestCount}}</td>
+          <td>{{stateHandling(item.surveySingleStatus)}}</td>
           <td ><span v-if="item.surveyStatus == '06'" class="listAssign" @click="signSeats(item.id)" >指派</span><i v-if="item.surveyStatus == '06'">|</i><span  class="listView" @click="goCaseDetail(item.id,item.surveyStatus)">查看</span></td>
         </tr>
         </tbody>
@@ -258,6 +262,18 @@
       this.caseDetailActive = this.$store.state.caseDetailActive;
     },
       methods: {
+        //查勘单状态
+        stateHandling(state){
+          if(state === "" || state === null){
+            return "未发送"
+          }
+          if(state){
+            return "已签字";
+          }
+          if(!state){
+            return "已发送，未签字"
+          }
+        },
 //      城市列表
         getCityList(){
           var paramData = {
@@ -435,6 +451,7 @@
             .then(response => {
               if(response.data.rescode == 200){
                 this.tableData = response.data.data.records;
+                console.log(this.tableData,"page")
                 this.$store.commit('getcaseListActive', false)//监听调用列表接口关闭
                 if(response.data.data.records.length !=0){
                   this.tableActive = true;
