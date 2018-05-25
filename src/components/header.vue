@@ -549,7 +549,8 @@
         tuiCityArr:[],
         tuiCompanyArr:[],
         companyModel:'',
-        geoc:""
+        provinceName: '',
+        districtName: ''
       }
     },
     mounted() {
@@ -990,6 +991,8 @@
             "lng": this.lng,
             "lat": this.lat,
             "mark": this.sign,
+            provinceName: this.provinceName,
+            districtName: this.districtName
           }
           // 如果是创建假单
           if(this.isFakeOrder){ 
@@ -1066,6 +1069,7 @@
       },
       //获取详细地址
       searchAdress(){
+        const that = this;        
         if(this.adressValue!=''){
           var map = '';
           map = new BMap.Map("allmap");
@@ -1091,6 +1095,13 @@
               map.centerAndZoom(poi.point, 13);
               var marker = new BMap.Marker(new BMap.Point(poi.point.lng, poi.point.lat));  // 创建标注，为要查询的地方对应的经纬度
               var geoc = new BMap.Geocoder();
+              var pt = poi.point;
+              geoc.getLocation(pt, function(rs){
+                  var addComp = rs.addressComponents;
+                  that.provinceName = addComp.province;
+                  that.districtName = addComp.district;
+                  // alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+              });
               map.addOverlay(marker);
               marker.enableDragging();  //设置可拖拽
               marker.addEventListener("dragend", function(e){  //拖动事件
