@@ -423,7 +423,7 @@
             <span @click="searchAdress">事故地点</span>
             <input class="adressInput" v-model="adressValue" id="text_" style="width: 166px;" type="text" placeholder="请输入事故地点"/><i @click="searchAdress" class="el-icon-search"></i>
             <span>经度</span>
-            <input class="adressInput" :value="lng" id="result_Lng" type="text" readonly placeholder="请输入经度"/>
+            <input class="adressInput"  :value="lng" id="result_Lng" type="text" readonly placeholder="请输入经度"/>
             <span>纬度</span>
             <input class="adressInput" :value="lat" id="result_Lat" type="text" readonly placeholder="请输入纬度"/>
             <span class="sureAdress backColorGreen hide" @click="sureAdress">确定</span>
@@ -548,7 +548,8 @@
         cityModel:'',
         tuiCityArr:[],
         tuiCompanyArr:[],
-        companyModel:''
+        companyModel:'',
+        geoc:""
       }
     },
     mounted() {
@@ -1063,6 +1064,7 @@
       closeAdressDiolag(){
         $(".AdressDialog").addClass("hide")
       },
+      //获取详细地址
       searchAdress(){
         if(this.adressValue!=''){
           var map = '';
@@ -1081,6 +1083,7 @@
             if(poi === undefined){
               alert('请输入合法地址')
             }else{
+
               //              $("#container").removeClass('none');
               $(".sureAdress").removeClass('hide')
               document.getElementById("result_Lng").value = poi.point.lng ;
@@ -1121,6 +1124,11 @@
         if(this.adressValue == ""){
           alert("请输入地址")
         }else{
+          var lng = document.getElementById("result_Lng").value;
+          if(lng.length == 0){
+             alert("没有获取到您的经纬度");
+             return
+          };
           this.accidentaddress = this.adressValue;
           this.lng = document.getElementById("result_Lng").value;
           this.lat = document.getElementById("result_Lat").value;

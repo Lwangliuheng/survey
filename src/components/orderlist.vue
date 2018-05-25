@@ -126,7 +126,7 @@
           <td class="green_word" v-if="item.isUploadedStatus">{{item.name}}<p class="callPhone" @click="sendPlace($event,item.surveyNo,item.lat,item.lng)"><img src="../images/have_location.png" class="callPhone_img"></p></td>
           <td class="gray_word" v-if="!item.isUploadedStatus">{{item.name}}<p class="callPhone" @click="sendPlace($event,item.surveyNo,item.lat,item.lng)"><img src="../images/no_location.png" class="callPhone_img"></p></td>
           <td style="width:160px;">{{item.survey}}</td>
-          <td>{{item.surveyorName}}<p class="callPhone" @click="callPhone($event,item.surveyorPhone)"><img src="../images/phone.png" class="callPhone_img"></p></td>
+          <td>{{item.surveyorName}}<p v-if="item.surveyorPhone" class="callPhone" @click="callPhone($event,item.surveyorPhone)"><img src="../images/phone.png" class="callPhone_img"></p></td>
           <td ><span v-if="item.status == '06'" class="listAssign" @click="signSeats(item.id)">指派</span><i v-if="item.status == '06'">|</i><span  class="listView" @click="goCaseDetail(item.surveyNo,item.status)">详情</span><i v-if="item.status == '07' || item.status == '06'">|</i><span  class="listView" @click="cancellationOrder(item.surveyNo,item.status)" v-if="item.status == '07' || item.status == '06'">取消订单</span></td>
         </tr>
         </tbody>
@@ -582,6 +582,7 @@
               if(response.data.rescode == 200){
                 console.log(response.data.data.records,5646564645654465)
                 this.tableData = response.data.data.records;
+                console.log(this.tableData,"45665454656654")
                 this.$store.commit('getcaseListActive', false)//监听调用列表接口关闭
                 if(response.data.data.records.length !=0){
                   //条数出现隐藏状态
