@@ -87,9 +87,6 @@ export default {
 .el-table th {
   border-right: 0;
 }
-.el-table td {
-  padding: 0;
-}
 .el-button--text span {
   color: #409EFF;
 }
@@ -98,6 +95,7 @@ export default {
 }
 .el-table td, .el-table th.is-leaf {
   border-bottom: 0;
+  padding: 0 !important;
 }
 .el-table--border, .el-table--group {
   border: none;
