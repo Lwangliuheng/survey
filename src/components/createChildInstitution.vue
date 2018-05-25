@@ -278,19 +278,22 @@ export default {
 
             //获取公司列表 
           this.getCompanys().then (res => {
-              this.companys = res;
+            this.companys = res;
+            this.ruleForm.company = {};
             this.ruleForm.company.companyCode = info.ridercomcode;
             this.ruleForm.company.companyName = info.ridercomname;
           });
 
         // 获取省份列表
           this.getProvinces().then( res => {
-              this.provinces = res;
+            this.provinces = res;
+            this.ruleForm.province = {};
             this.ruleForm.province.id = info.provincecode;
             this.ruleForm.province.name = info.provincename;
 
             this.getCitys(info.provincecode).then( res => {
                 that.citys = res;
+                that.ruleForm.city = {};
                 that.ruleForm.city.id = info.citycode
                 that.ruleForm.city.name = info.cityname
             })
