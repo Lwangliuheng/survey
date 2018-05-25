@@ -82,7 +82,7 @@ export default {
 .el-table th,
 .el-table td {
   border-left: 0;
-  text-align: center;
+  text-align: center !important;
 }
 .el-table th {
   border-right: 0;
