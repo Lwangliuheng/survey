@@ -409,7 +409,7 @@
             </el-tab-pane>
             <el-tab-pane  label="派单机构" name="five"  v-if="zcState == 'true'">
             </el-tab-pane>
-            <el-tab-pane  label="理赔指引" name="eight">
+            <el-tab-pane  label="理赔指引" name="eight" v-if="zcState == 'true'">
             </el-tab-pane>
           </el-tabs>
         </div>
