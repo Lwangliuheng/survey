@@ -943,7 +943,7 @@
             this.lat = '';
             this.sign = '1';
             this.textareaValue = '';
-            this.adressValue = '';
+            // this.adressValue = '';
             this.isGetOrder = false;
       },
       creatNewCase() {//确定创建案件
@@ -1148,7 +1148,7 @@
           $(".sureAdress").addClass('hide')
           document.getElementById("result_Lng").value = "";
           document.getElementById("result_Lat").value = "";
-          this.adressValue = '';
+          // this.adressValue = '';
         }
       },
       checkRadio(){
