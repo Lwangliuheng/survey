@@ -18,12 +18,13 @@
   import orderList from '@/components/orderList'
   import caseMonitor from '@/components/caseMonitor'
   export default {
-    props: ['zcState'],
+    // props: ['zcState'],
     data() {
       return{
         jianKongActive: true,
         allCaseActive: false,
-        allsendOrders:false
+        allsendOrders:false,
+        zcState: JSON.parse(localStorage.zcState)
       }
     },
     methods: {

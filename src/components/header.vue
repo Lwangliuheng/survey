@@ -385,7 +385,7 @@
                 </select>
               </div>
               <div class="addinsitituteInput" v-if="isFakeOrder">
-                <span class="addinsitituteSpan">可以抢单</span>
+                <span class="addinsitituteSpan">是否可抢</span>
                 <input type="checkbox" v-model="isGetOrder">
               </div>
               <div class="addinsitituteInput addinsitituteInputTe">
