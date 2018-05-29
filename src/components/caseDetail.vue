@@ -190,7 +190,7 @@
                 </div>
               </div>
 
-              <div class="caseInfoBox" v-if="caseDetailData.accidentInfo.exceptionReason != null"><span>异常原因：</span><i>{{caseDetailData.accidentInfo.exceptionReason}}</i></div>
+              <div class="caseInfoBox" v-if="caseDetailData.accidentInfo.exceptionReason != null"><span>事故经过：</span><i>{{caseDetailData.accidentInfo.exceptionReason}}</i></div>
           </div>
           <div class="AimCar" v-if="beizhuActive">
             <div  class="aimheader">备注信息</div>
