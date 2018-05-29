@@ -392,7 +392,18 @@
           axios.post(this.ajaxUrl+"/published_order/v1/sendMsg",paramData)
             .then(response => {
               if(response.data.rescode == 200){
-                 this.open2("操作成功！");
+                    this.$confirm('短息发送成功！', '温馨提示', {
+                                  confirmButtonText: '确定',
+                                  showCancelButton:false,
+                                  customClass:"tsk",
+                                  type: 'warning',
+                                  showClose:false,
+                                  center: true
+                          }).then(() => {
+                             
+                          }).catch(() => {
+                          
+                    });
               }else{
                  this.open4("操作失败！");
               }

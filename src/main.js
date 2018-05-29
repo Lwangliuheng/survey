@@ -36,6 +36,10 @@ if(config.url == '/boot-pub-survey-manage/pub/survey/v1/action'){
 if(config.url == '/boot-pub-survey-manage/pub/survey/v1/page'){
   loadinginstace = ElementUI.Loading.service({ fullscreen: true })
 }
+//机构后台--实时监控-车主电话--给车主发短信
+if(config.url == '/boot-pub-survey-manage/published_order/v1/sendMsg'){
+  loadinginstace = ElementUI.Loading.service({ fullscreen: true })
+}
   return config
 }, error => {
 
