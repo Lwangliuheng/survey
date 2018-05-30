@@ -215,6 +215,8 @@
         </ul>
       </div>
     </div>
+    <!-- 打电话 -->
+    <call-phone v-if="callPhoneStatus" v-bind:phone="callPhoneNum"></call-phone>
     <case-detail v-if="caseDetailActive"></case-detail>
     <!-- 指派 -->
     <sign-Seats v-if="signSeatsActive"></sign-Seats>
@@ -229,9 +231,12 @@
   import signSeats from '../components/signSeats'
   import orderMap from '../components/orderMap'
   import Bus from "../../static/bus.js"
+  import callPhone from '../components/callPhone'
   export default {
     data() {
       return {
+        callPhoneNum:"",//拨打电话值
+        callPhoneStatus:false,
         detailsStatus:false,
         surveyNo:"",
         lat:"",
@@ -333,7 +338,10 @@
       //注册事件
       Bus.$on('orderMapStatusChange', () => { //Hub接收事件
         this.orderMapStatus = false;
-    });
+       });
+      Bus.$on('gbCallPhoneTc', () => { //Hub接收事件
+        this.callPhoneStatus = false;
+       });
     },
     mounted() {
       this.caseDetailActive = this.$store.state.caseDetailActive;
@@ -379,7 +387,9 @@
         },
         //打电话
         callPhone(e,phone){
-          alert(phone)
+          this.callPhoneStatus = true;
+          this.callPhoneNum = phone;
+          //alert(phone)
         },
         //发短信
         sendMessages(e,phone){
@@ -734,6 +744,7 @@
         }
       },
     components: {
+      callPhone,
       caseDetail,
       orderMap,
       signSeats,
