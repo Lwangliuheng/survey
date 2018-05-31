@@ -299,7 +299,8 @@
       <div class="creatCaseDialogBox">
         <span @click="closCreatDiolag" class="closCreatDiolag">×</span>
         <div class="oneMonitor clear">
-          <h4 class="dialogTitle">创建案件</h4>
+          <h4 class="dialogTitle" v-show="isFakeOrder">创建优惠单</h4>
+          <h4 class="dialogTitle" v-show="!isFakeOrder">创建案件</h4>
           <div class="clear scrollBox">
             <div style="margin-top:20px;">
               <div class="addinsitituteInput">
@@ -468,10 +469,10 @@
         </div>
       </div>
       <div class="headerLeft">
+        <span class="creatCase" v-if="headerActiveOne == 'true' && zcState == 'true'" @click="openCreatCase(1)" style="margin-right:5px;">创建优惠单</span>
         <span class="userName">{{chinaName}}</span>
         <span class="userInsitu">({{userName}})</span>
         <span class="signOut" @click="clickSignOut">退出</span>
-        <span class="creatCase" v-if="headerActiveOne == 'true' && zcState == 'true'" @click="openCreatCase(1)" style="margin-right:5px;">创建优惠单</span>
         <span class="creatCase" v-if="headerActiveOne == 'true'" @click="openCreatCase(2)">创建案件</span>
       </div>
     </div>
