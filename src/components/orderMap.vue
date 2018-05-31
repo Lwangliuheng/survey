@@ -112,7 +112,7 @@
               message:""
             };
             // content = '<div style="overflow:hidden;padding-top:20px"><p><span>距离事故地点还有:</span><span>'+data.chang+'</span></p><p onClick="callPhone('+data.surveyorPhone+')"><span >电话：</span><span  style="margin-right:10px;">'+data.surveyorPhone+'</span><img src="/src/images/phone.png" style="width:18px;height:19px"/></p></div>'
-          content = '<div style="overflow:hidden;padding-top:20px"><p style="float:left"><span>距离事故地点还有</span><span>'+data.chang+'</span></p><p style="float:left;margin-left:10px" onClick="callPhone('+data.surveyorPhone+')"><img src="/src/images/phone.png" style="width:18px;height:19px"/></p></div>';
+          content = '<div style="overflow:hidden;padding-top:20px"><p style="float:left"><span>距离事故地点还有</span><span>'+data.chang+'</span></p><p style="float:left;margin-left:10px" onClick="callPhone('+data.surveyorPhone+')"><img src="/static/phone.png" style="width:18px;height:19px"/></p></div>';
         };
         if(status == 3){
            opts = {
@@ -122,7 +122,7 @@
               enableMessage:true,//设置允许信息窗发送短息
               message:""
             };
-           content = '<div style="overflow:hidden;padding-top:20px"><p><span>姓名：</span><span>'+data.surveyorName+'</span></p><p onClick="callPhone('+data.surveyorPhone+')"><span >电话：</span><span  style="margin-right:10px;">'+data.surveyorPhone+'</span><img src="/src/images/phone.png" style="width:18px;height:19px"/></p></div>';
+           content = '<div style="overflow:hidden;padding-top:20px"><p><span>姓名：</span><span>'+data.surveyorName+'</span></p><p onClick="callPhone('+data.surveyorPhone+')"><span >电话：</span><span  style="margin-right:10px;">'+data.surveyorPhone+'</span><img src="/static/phone.png" style="width:18px;height:19px"/></p></div>';
         };
         var infoWindow = new BMap.InfoWindow(content, opts); 
         return function getAttr(target){
