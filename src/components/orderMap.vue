@@ -12,15 +12,19 @@
           </div>
         </div>
       </div>
+      <call-modal v-if="callPhoneStatus" v-bind:phone="callPhoneNum"></call-modal>
     </div>
 </template>
 <script>
   import axios from 'axios'
   import Bus from "../../static/bus.js"
+  import callModal from '../components/callModal'
   export default {
     props: ['surveyNo',"lat","lng"],
     data() {
         return{
+          callPhoneNum:"",//拨打电话值
+          callPhoneStatus:false,
           map:"",
           time:"",//到达时间
           cahng:""//距离
@@ -35,6 +39,9 @@
     },
     mounted() {
       //绘制地图
+      Bus.$on('gbCallPhoneTc', () => { //Hub接收事件
+        this.callPhoneStatus = false;
+       });
      this.getInof();
      //
     },
@@ -79,7 +86,9 @@
          var opts = "";
         //打电话
          window.callPhone = function(phone){
-                alert(phone)
+              that.callPhoneStatus = true;
+              that.callPhoneNum = phone;
+                // alert(phone)
         };
         if(status == 1){
            opts = {
@@ -281,7 +290,7 @@
         
     },
     components: {
-     
+       callModal
     },
     computed: {
     

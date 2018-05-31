@@ -40,6 +40,15 @@ if(config.url == '/boot-pub-survey-manage/pub/survey/v1/page'){
 if(config.url == '/boot-pub-survey-manage/published_order/v1/sendMsg'){
   loadinginstace = ElementUI.Loading.service({ fullscreen: true })
 }
+//挂断电话
+if(config.url == '/phone-api-boot/public/phone/v1/updatePhone'){
+  loadinginstace = ElementUI.Loading.service({ fullscreen: true })
+}
+//拨打电话
+if(config.url == '/phone-api-boot/public/phone/v1/getPhone'){
+  loadinginstace = ElementUI.Loading.service({ fullscreen: true })
+}
+
   return config
 }, error => {
 
@@ -68,6 +77,27 @@ axios.interceptors.response.use(data => {// 响应成功关闭loading
   return Promise.reject(error)
 })
 
+
+var id = localStorage.getItem("phoneId");
+if(localStorage.getItem('phoneId') == "undefined" || localStorage.getItem('phoneId') == null || !localStorage.getItem('phoneId')){
+}else{
+  var data = {
+    id:localStorage.getItem('phoneId')
+   }
+   axios.post("/phone-api-boot/public/phone/v1/updatePhone",data)
+     .then(response => {
+       if(response.status == 200){
+          localStorage.setItem("phoneId","");
+       }else{
+         
+       }
+     }, err => {
+       console.log(err);
+     })
+     .catch((error) => {
+       console.log(error)
+     })
+};
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 // Vue.use(axios);

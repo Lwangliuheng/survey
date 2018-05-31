@@ -95,6 +95,7 @@ ClassXnCtiClient.prototype.CtiConnect = function (IP, Port) {
     var lRes = this.websocket.logon(lURL, thisDN, $.toJSON(data), {
         //onOpen callback
         OnOpen: function (aEvent) {
+            
             xncti.websocket.startKeepAlive({ immediate: false, interval: 30000 });
             xncti.IsConnect_CTI = 1;
             xncti.CTIConnectedEvent();
@@ -105,6 +106,7 @@ ClassXnCtiClient.prototype.CtiConnect = function (IP, Port) {
         },
         //onClose callback
         OnClose: function (aEvent) {
+            
             xncti.websocket.stopKeepAlive();
             xncti.IsConnect_CTI = 0;
             xncti.CTIDisConnectedEvent();
@@ -114,8 +116,9 @@ ClassXnCtiClient.prototype.CtiConnect = function (IP, Port) {
 }
 ClassXnCtiClient.prototype.send = function (data) {
    // console.info("Send CTI:  " + data);
+   console.log(this.websocket,44444444444444)
     if (this.websocket) {
-
+        
         this.websocket.sendToken(data);
     } else {
         showMessage("disconnect from cti server while send message");
@@ -203,6 +206,7 @@ ClassXnCtiClient.prototype.parseMessage = function (data) {
                                 var agentstate = GetBodyItem(data, "agentstate");
                                 var laststate = GetBodyItem(data, "laststate");
                                 var calldata = GetBodyItem(data, "callData");
+                                console.log(agentid,callid,calltype,compid,areacode,calleedevice,callerdevice,taskid,tasktype,agentstate,laststate,calldata)
                                 this.EVENT_AgentRinging(compid, agentid, callid, calltype, calleedevice, callerdevice, areacode, taskid, tasktype, agentstate, laststate, calldata);
                             }
                             break;
@@ -382,7 +386,10 @@ ClassXnCtiClient.prototype.CtiDisconnect = function () {
 ///检查连接状态@@@
 ///////////////////////////////////////////////////////////
 ClassXnCtiClient.prototype.CheckWS = function () {
+    //alert(this.websocket != null)
     if (this.websocket != null) {
+        //alert(222222)
+        console.log(!this.websocket.isConnected(),5454564654654)
         if (!this.websocket.isConnected()) {
             return false;
         }
@@ -594,24 +601,31 @@ ClassXnCtiClient.prototype.AgentLogout = function () {
 ///////////////////////////////////////////////////////////
 ClassXnCtiClient.prototype.MakeCall = function (deviceid, type, calldata) {
     if (!this.CheckWS()) {
+        //alert(11111)
         return this.JsonResult(-1);
     }
     if (this.UserID == null) {
+        
         return this.JsonResult(-301);
     }
     if (type == null || type == '') {
+        
         return this.JsonResult(-302);
     }
     if (deviceid == null || deviceid == '') {
+        
         return this.JsonResult(-303);
     }
+    
     var cmd = this.MsgHead(MSGTYPE.CMD, MSGCLASS.CMD_MakeCall, MSGCLASS.CMD_MakeCall);
     cmd += this.MsgBodyItem("agentid", this.UserID);
     cmd += this.MsgBodyItem("deviceid", deviceid);
     cmd += this.MsgBodyItem("type", type);
     cmd += this.MsgBodyItem("callData", calldata);
     cmd += this.msgend;
+
     this.send(cmd);
+
     return this.JsonResult(1);
 }
 ///////////////////////////////////////////////////////////

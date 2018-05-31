@@ -273,6 +273,7 @@ var ws = {
     //:a:en::::none
     //:r:*:::boolean:[tt]true[/tt] if the WebSocket connection is up otherwise [tt]false[/tt].
     isConnected: function () {
+
         return (this.isOpened());
     },
 
@@ -281,6 +282,7 @@ var ws = {
     //:a:en::::none
     //:r:*:::boolean:[tt]true[/tt] if the WebSocket connection is up otherwise [tt]false[/tt].
     isOpened: function () {
+         
         return (
             this.fConn != undefined
             && this.fConn != null
@@ -489,6 +491,7 @@ ws.oop.declareClass("ws", "webSocketBaseClient", null, {
     //:a:en:aOptions:OnOpen:function:Callback when connection was successfully established.
     //:r:*:::void:none
     open: function (aURL, aOptions) {
+        //alert(66666)
         if (!aOptions) {
             aOptions = {};
         }
@@ -504,8 +507,9 @@ ws.oop.declareClass("ws", "webSocketBaseClient", null, {
             if (!this.fConn) {
                 var lThis = this;
                 var lValue = null;
-
+                //alert(aURL)
                 this.fConn = new ReconnectingWebSocket(aURL);
+                console.log(this.fConn,789897897798879)
                 // save URL and sub prot for optional re-connect
                 this.fURL = aURL;
 
@@ -533,6 +537,7 @@ ws.oop.declareClass("ws", "webSocketBaseClient", null, {
                 };
 
                 this.fConn.onclose = function (aEvent) {
+
                     lThis.fStatus = ws.WS_CLOSED;
                     // give application chance to handle event
                     if (aOptions.OnClose) {
@@ -578,6 +583,7 @@ ws.oop.declareClass("ws", "webSocketBaseClient", null, {
     //:a:en::aOptions:Object:Please refer to [tt]open[/tt] method.
     //:r:*:::void:none
     connect: function (aURL, aOptions) {
+
         return this.open(aURL, aOptions);
     },
 
@@ -586,6 +592,9 @@ ws.oop.declareClass("ws", "webSocketBaseClient", null, {
     //:a:en::::none
     //:r:*:::boolean:[tt]true[/tt] if the WebSocket connection is up otherwise [tt]false[/tt].
     isOpened: function () {
+        //alert(4444)
+        // console.log(this.fConn,"this.fConn")
+        // console.log(this.fConn.readyState,"this.fConn.readyState")
         return (
             this.fConn != undefined
             && this.fConn != null
@@ -607,6 +616,7 @@ ws.oop.declareClass("ws", "webSocketBaseClient", null, {
     //:a:en::::none
     //:r:*:::boolean:[tt]true[/tt] if the WebSocket connection is up otherwise [tt]false[/tt].
     isConnected: function () {
+        //alert(3333)
         return (this.isOpened());
     },
 
@@ -700,6 +710,7 @@ ws.oop.declareClass("ws", "webSocketClient", ws.webSocketBaseClient, {
     //:r:*:Object:code:Number:Response code (0 = ok, otherwise error).
     //:r:*:Object:msg:String:"Ok" or error message.
     open: function (aURL, aOptions) {
+         //alert(555555)
         var lRes = this.createDefaultResult();
         try {
             if (aOptions && aOptions.OnWelcome && typeof aOptions.OnWelcome == "function") {

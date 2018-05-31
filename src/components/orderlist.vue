@@ -216,7 +216,7 @@
       </div>
     </div>
     <!-- 打电话 -->
-    <call-phone v-if="callPhoneStatus" v-bind:phone="callPhoneNum"></call-phone>
+    <call-modal v-if="callPhoneStatus" v-bind:phone="callPhoneNum"></call-modal>
     <case-detail v-if="caseDetailActive"></case-detail>
     <!-- 指派 -->
     <sign-Seats v-if="signSeatsActive"></sign-Seats>
@@ -231,7 +231,7 @@
   import signSeats from '../components/signSeats'
   import orderMap from '../components/orderMap'
   import Bus from "../../static/bus.js"
-  import callPhone from '../components/callPhone'
+  import callModal from '../components/callModal'
   export default {
     data() {
       return {
@@ -387,6 +387,7 @@
         },
         //打电话
         callPhone(e,phone){
+
           this.callPhoneStatus = true;
           this.callPhoneNum = phone;
           //alert(phone)
@@ -744,7 +745,7 @@
         }
       },
     components: {
-      callPhone,
+      callModal,
       caseDetail,
       orderMap,
       signSeats,
