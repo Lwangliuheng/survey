@@ -193,7 +193,7 @@
             <th>查勘员姓名</th>
             <th>查勘员手机号</th>
             <th>所属城市</th>
-            <th style="width:16%;">所属单位</th>
+            <!-- <th style="width:16%;">所属单位</th> -->
             <th style="width:12%;">添加时间</th>
             <th style="width:8%;">账号状态</th>
             <th style="width:8%;">审核状态</th>
@@ -210,7 +210,7 @@
             <td>{{item.name}}</td>
             <td>{{item.phone}}</td>
             <td>{{item.affiliateCity}}</td>
-            <td>{{item.affiliateCompany}}</td>
+            <!-- <td>{{item.affiliateCompany}}</td> -->
             <td style="width:160px;">{{item.joinTime}}</td>
             <td>{{item.accountStatu}}</td>
             <td>{{item.areaflag == '2' ? '通过': '未通过'}}</td>
