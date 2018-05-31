@@ -35,7 +35,8 @@
               </div>
               <div class="addinsitituteInput">
                 <span class="spanInfo">所属公司:</span>
-                <span class="infoDetail">{{surveyInfo.auCompanyName}}</span>
+                <!-- <span class="infoDetail">{{surveyInfo.auCompanyName}}</span> -->
+                <span class="infoDetail">{{companyename}}</span>
               </div>
               <div class="addinsitituteInput">
                 <span class="spanInfo">账号状态:</span>
@@ -532,7 +533,7 @@
                 "citycode": this.citycode,
                 "cityname": cityname,
                 "companycode": this.compnaycode,
-                "companyname": companyename,
+                "companyname": this.companyename,
                 "isvalid": this.isvalid
               };
               var url = '/pubsurvey/surveyor/v1/rider/surveyoradd'
@@ -545,7 +546,7 @@
                 "citycode": this.citycode,
                 "cityname": cityname,
                 "companycode": this.compnaycode,
-                "companyname": companyename,
+                "companyname": this.companyename,
                 "isvalid": this.isvalid
               };
               var url = '/pubsurvey/surveyor/v1/rider/surveyorupdate';
