@@ -76,6 +76,9 @@
           if(status == 2){
               marker.addEventListener("click",this.addMarkerWrap(pt,infoData,status));//注册事件
           };
+          if(status == 3){
+              marker.addEventListener("click",this.addMarkerWrap(pt,infoData,status));//注册事件
+          };
           this.map.addOverlay(marker);    //画图
        },
        addMarkerWrap(pt,infoData,status){
@@ -97,8 +100,8 @@
               title : "" , // 信息窗口标题
               enableMessage:true,//设置允许信息窗发送短息
               message:""
-            }
-           content = '<div class="ts"><p style="line-height:25px">用户等待时间：'+data.awaitTime+'</p><p style="line-height:25px">精确位置：'+data.isUploaded+'</p><p style="line-height:25px">骑手：'+data.qs+'</p><p class="yj" style="line-height:25px">预计到达时间：'+data.time+'</p></div>'
+            };
+           content = '<div class="ts"><p style="line-height:25px">用户等待时间：'+data.awaitTime+'</p><p style="line-height:25px">精确位置：'+data.isUploaded+'</p><p style="line-height:25px">骑手：'+data.qs+'</p><p class="yj" style="line-height:25px">预计到达时间：'+data.time+'</p></div>';
         };
         if(status == 2){
           opts = {
@@ -108,7 +111,18 @@
               enableMessage:true,//设置允许信息窗发送短息
               message:""
             };
-          content = '<div style="overflow:hidden;padding-top:20px"><p style="float:left"><span>距离事故地点还有</span><span>'+data.chang+'</span></p><p style="float:left;margin-left:10px" onClick="callPhone('+data.surveyorPhone+')"><img src="/src/images/phone.png" style="width:18px;height:19px"/></p></div>'
+            // content = '<div style="overflow:hidden;padding-top:20px"><p><span>距离事故地点还有:</span><span>'+data.chang+'</span></p><p onClick="callPhone('+data.surveyorPhone+')"><span >电话：</span><span  style="margin-right:10px;">'+data.surveyorPhone+'</span><img src="/src/images/phone.png" style="width:18px;height:19px"/></p></div>'
+          content = '<div style="overflow:hidden;padding-top:20px"><p style="float:left"><span>距离事故地点还有</span><span>'+data.chang+'</span></p><p style="float:left;margin-left:10px" onClick="callPhone('+data.surveyorPhone+')"><img src="/src/images/phone.png" style="width:18px;height:19px"/></p></div>';
+        };
+        if(status == 3){
+           opts = {
+              width : 200,     // 信息窗口宽度
+              height: 50,     // 信息窗口高度
+              title : "" , // 信息窗口标题
+              enableMessage:true,//设置允许信息窗发送短息
+              message:""
+            };
+           content = '<div style="overflow:hidden;padding-top:20px"><p><span>姓名：</span><span>'+data.surveyorName+'</span></p><p onClick="callPhone('+data.surveyorPhone+')"><span >电话：</span><span  style="margin-right:10px;">'+data.surveyorPhone+'</span><img src="/src/images/phone.png" style="width:18px;height:19px"/></p></div>';
         };
         var infoWindow = new BMap.InfoWindow(content, opts); 
         return function getAttr(target){
@@ -237,7 +251,7 @@
              }
           };
            var pt = new BMap.Point(obj.lng, obj.lat);
-           var myIcon = new BMap.Icon("/static/yh.png", new BMap.Size(33,40));
+           var myIcon = new BMap.Icon("/static/yh.png", new BMap.Size(32,40));
            this.map.centerAndZoom(pt, 12);
            //画图
            this.addMarker(pt,{icon:myIcon},obj,1);  
