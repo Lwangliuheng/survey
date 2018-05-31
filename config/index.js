@@ -38,8 +38,8 @@ module.exports = {
         // target: 'http://lipengwei.furui.com',      // 个人服务器
         // target: 'http://liangxing.furui.com',      // 个人服务器
         // target: 'http://luhongguang.furui.com',
-        target:'http://192.168.1.126:8080',
-         //target:'https://survey.zhongchebaolian.com', // 测试
+        //target:'http://192.168.1.126:8080',
+        target:'http://192.168.3.155:8081', // 测试
         // target: 'https://api.accidentx.zhongchebaolian.com', // 正式
        
         //changeOrigin: true,

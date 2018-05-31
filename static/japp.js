@@ -1,7 +1,8 @@
 ﻿$(function () {
     $.ajaxSetup({
-        url: 'http://api.salescomm.net/Handler/agent.ashx',
-      // url: 'http://192.168.70.52:1000/Handler/agent.ashx',
+        //url: ' https://api.salescomm.net:8015/Handler/agent.ashx',
+        url:'https://api.salescomm.net:8015/Handler/agent.ashx',
+        //url: 'http://192.168.70.52:1000/Handler/agent.ashx',
         type: 'POST',
         dataType: "jsonp",
         jsonp: "callbackparam",
