@@ -687,6 +687,7 @@
       },
       //智能匹配事件
       intelligentMatchClick(e){
+
         if(this.textareaValue.length == 0){
             this.open4("请输入智能匹配信息")
             return
@@ -698,6 +699,15 @@
           axios.post(this.ajaxUrl+"/intelligent_match/v1/match",paramData)
           .then(response => {
             if(response.data.rescode == 200){
+               if(this.zcState == "false"){
+                   
+                  var code = localStorage.getItem("insurecompanyCode");
+                  if(code != response.data.data.company){
+                     this.open4("保险公司错误！");
+                     return
+                  };
+
+               }
                this.phoneno = response.data.data.phoneno;
                this.licensenoTwo = response.data.data.licenseno;
                this.person = response.data.data.person;
