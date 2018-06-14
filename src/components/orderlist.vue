@@ -127,7 +127,7 @@
           <td class="gray_word" v-if="!item.isUploadedStatus">{{item.name}}<p class="callPhone" @click="sendPlace($event,item.surveyNo,item.lat,item.lng)"><img src="../images/no_location.png" class="callPhone_img"></p></td>
           <td style="width:160px;">{{item.survey}}</td>
           <td>{{item.surveyorName}}<p v-if="item.surveyorPhone" class="callPhone" @click="callPhone($event,item.surveyorPhone)"><img src="../images/phone.png" class="callPhone_img"></p></td>
-          <td ><span v-if="item.status == '06'" class="listAssign" @click="signSeats(item.id)">指派</span><i v-if="item.status == '06'">|</i><span  class="listView" @click="goCaseDetail(item.surveyNo,item.status)">详情</span><i v-if="item.status == '07' || item.status == '06'">|</i><span  class="listView" @click="cancellationOrder(item.surveyNo,item.status)" v-if="item.status == '07' || item.status == '06'">取消订单</span></td>
+          <td ><span class="listView" v-if="item.status == '06'" @click='checkSendVoiceCount(item.surveyNo)'>语音通知</span><i v-if="item.status == '06'">|</i><span v-if="item.status == '06'" class="listAssign" @click="signSeats(item.id)">指派</span><i v-if="item.status == '06'">|</i><span  class="listView" @click="goCaseDetail(item.surveyNo,item.status)">详情</span><i v-if="item.status == '07' || item.status == '06'">|</i><span  class="listView" @click="cancellationOrder(item.surveyNo,item.status)" v-if="item.status == '07' || item.status == '06'">取消订单</span></td>
         </tr>
         </tbody>
       </table>
@@ -223,6 +223,26 @@
     <!-- 地图组件 -->
     <order-Map v-if="orderMapStatus" v-bind:survey-no="surveyNo" v-bind:lat="lat" v-bind:lng="lng"></order-Map>
     <!--&lt;!&ndash;layout="total,prev,pager, next,jumper"&ndash;&gt;layout="total,prev,pager, next,jumper"-->
+    
+    <el-dialog title="提示" :visible.sync="outerVisible" width="30%">
+      <el-dialog
+        width="30%"
+        title="选择发送对象"
+        :visible.sync="innerVisible"
+        append-to-body>
+          <el-checkbox label="接过单的" v-model="checked1"></el-checkbox>
+          <el-checkbox label="未接过单的" v-model="checked2"></el-checkbox>
+          <div style='text-align:right;margin-top:10px;'>
+            <el-button @click='innerVisible = false;'>取消</el-button>
+            <el-button type="primary" @click='sendVoiceNotify'>发送</el-button>
+          </div>
+      </el-dialog>
+      <span>该订单已外呼过骑手，是否再次外呼？</span>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="outerVisible = false">取消</el-button>
+        <el-button type="primary" @click="innerVisible = true;outerVisible=false;">选择发送对象</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -235,6 +255,10 @@
   export default {
     data() {
       return {
+        outerVisible: false,
+        innerVisible: false,
+        checked1: false,
+        checked2: false,
         callPhoneNum:"",//拨打电话值
         callPhoneStatus:false,
         detailsStatus:false,
@@ -308,6 +332,7 @@
         signSeatsActive: false,
         caseListActive: false,
         time: '',
+        currentsurveyNo: ''
       }
     },
     watch: {
@@ -392,6 +417,58 @@
           this.callPhoneNum = phone;
           //alert(phone)
         },
+        // 检测发送过的语音次数
+        checkSendVoiceCount (surveyNo){
+          this.currentsurveyNo = surveyNo;
+          this.checked1 = false;
+          this.checked2 = false;
+
+          axios.post(this.ajaxUrl+"/dispatch_notice/v1/call_count",{surveyNo:surveyNo})
+          .then(res => {
+            // console.log('发送语音次数',res);
+            if(res.data.rescode == 200) {
+              if(res.data.data == 0){
+                this.sendVoiceNotify(1);
+              }else {
+                this.outerVisible = true;
+              }
+            }else {
+              this.open4(res.data.resdes);
+            }
+          })
+        },
+
+        // 发送语音通知
+        sendVoiceNotify(type){
+          let data = {
+            surveyNo: this.currentsurveyNo
+          };
+
+          if(type == 1) {
+            data.type = type;
+          }else {
+            if(this.checked1 && this.checked2){
+              data.type = 1;// 全部
+            }else if(this.checked1 && !this.checked2){
+              data.type = 2;// 已接单
+            }else if(!this.checked1 && this.checked2){
+              data.type = 3; // 未接单
+            }else{
+              return;
+            }
+          }
+          this.innerVisible = false;
+          axios.post(this.ajaxUrl+"/dispatch_notice/v1/call",data)
+          .then(res => {
+            // console.log('发送语音次数',res);
+            if(res.data.rescode == 200) {
+                this.open2('发送成功！');
+            }else {
+              this.open4(res.data.resdes);
+            }
+          })
+        },
+        
         //发短信
         sendMessages(e,phone){
            var paramData = {
