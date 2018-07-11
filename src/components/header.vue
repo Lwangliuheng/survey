@@ -352,16 +352,20 @@
               </div>
 
 
-              <div class="addinsitituteInput">
+              <div class="addinsitituteInput" style="position: relative;">
                 <span class="addinsitituteSpan">处理机构</span>
-                <select class="creatInput" v-model="orgCode" v-if="zhongcheActive">
+                <input type="text" class="creatInput" v-model="orgName" @focus="orgCodeFocus" @input="checkOrgCode">
+                <div class="tuiBox border1" v-if="orgCodeStatus">
+                  <span @click="chooseOrgCode(item.name,item.code)" v-for="item in orgOption">{{item.name}}</span>
+                </div>
+                <!-- <select class="creatInput" v-model="orgCode" v-if="zhongcheActive">
                   <option v-for="item in orgOption" :value="item.code">{{item.name}}</option>
-                  <!--<option value="">请选择机构</option>-->
+                  
                 </select>
                 <select class="creatInput" v-model="orgCode" v-else>
                   <option v-for="item in orgOption" :value="item.code">{{item.name}}</option>
-                  <!--<option value="">请选择机构</option>-->
-                </select>
+                
+                </select> -->
 
               </div>
               <div class="addinsitituteInput">
@@ -488,6 +492,7 @@
 
 </template>
 <script>
+  import Bus from "../../static/bus.js"
   //  import baiduAdress from '@/components/baiduAdress'
   import caseManage from '@/components/caseManage'
   import seatManage from '@/components/seatManage'
@@ -503,6 +508,9 @@
   export default {
     data(){
       return{
+        orgCodeStatus:false,
+        xgId:"",
+        modifierStatus:false,
         textareaValue:"",
         isGetOrder: false, // 是否可以抢到假单
         zcState:false,
@@ -513,12 +521,14 @@
         isChannel: false,
         isFakeOrder: false, // 创建真单还是假单
         orgCode: "",
+        orgName:"",
         surveyType: "1",
         mark: "1",
         sign: "1",
         cityOption: [],
         companeyOption: [],
         orgOption: [],
+        orgOptionArr:[],
         reportno: "",
         person: "",
         licensenoTwo: "",
@@ -555,6 +565,21 @@
       }
     },
     mounted() {
+       Bus.$on('MODIFY_THE_CASE', (data) => { //Hub接收事件
+          this.xgId = parseInt(data.id);
+          this.modifyInfo(data);
+          if(data.promotionFlag == 0){
+            //修改假单
+            this.openCreatCase(3);
+          }
+          if(data.promotionFlag == 1){
+            //修改真单
+            this.openCreatCase(4);
+          }
+
+
+                
+      }); 
     },
     created(){
       this.chinaName = localStorage.getItem('chinaName')
@@ -670,6 +695,55 @@
 
     },
     methods: {
+      modifyInfo(data){
+            var sid = parseInt(data.id);
+            axios.get(this.ajaxUrl+"/survey-detail/v1/info/"+ sid)
+              .then(response => {
+                if(response.data.rescode == 200){
+                  console.log(response.data.data)
+                  if(response.data.data != null){
+                    var data = response.data.data;
+                    console.log(data,"info");
+                      this.phoneno =  data.siReportPhone; //手机号
+                      this.getCity = data.siReportLicenseNo.slice(0,1);//车牌号区域
+                      this.licensenoTwo =  data.siReportLicenseNo.slice(1);//车牌号
+                      this.person =  data.siReporterName; //报案人姓名
+                      this.reportno =  data.siReportNo;//保险报案号
+                      this.company =  data.siInsureCode;////保险公司code
+                      this.companyName =  data.siInsureName;//保险公司名称 
+                      this.companyModel = data.siInsureName;//保险公司名称 
+                      this.city =  data.siCityCode;//城市code
+                      this.cityName =  data.siCityName;//城市名
+                      this.cityModel = data.siCityName;
+                      this.orgCode =  data.siSurveyorOrgcode;//处理机构
+                      this.orgName =  data.siOrdercreateOrgname;//处理机构名称
+                      this.surveyType =  data.siSurveyType ;//查勘类型
+                      this.accidentaddress =  data.siAccidentAddress;//事故地点
+                      this.adressValue = data.siAccidentAddress;//事故地点
+                      this.lng =  data.siAccidentLng;
+                      this.lat =  data.siAccidentLat;
+                      this.sign =  1;//指派
+                      this.provinceName =  '';//省
+                      this.districtName =  '';//市 
+                      if(data.siGetFlag == 1){
+                        this.isGetOrder = true;
+                      };
+                      if(data.siGetFlag == 0){
+                        this.isGetOrder = false;
+                      };
+
+
+                  }
+                }
+              }, err => {
+                console.log(err);
+                
+              })
+              .catch((error) => {
+                console.log(error);
+                
+              })
+      }, 
       //获取经纬度
       getLogLat(value){
         const that = this;
@@ -732,6 +806,44 @@
           .catch((error) => {
             console.log(error)
           })
+      },
+       //处理机构
+      orgCodeFocus(){
+          this.orgCodeStatus = true;
+          var orgList = [];
+          this.orgOptionArr.forEach((i,n)=>{
+            if(i.name.indexOf(this.orgName) != '-1'){
+              orgList.push({
+                name:i.name, code:i.code
+              });
+            }
+          });
+          if(this.orgName.length != 0){
+              this.orgOption = orgList;
+          }else{
+             this.orgOption = this.orgOptionArr;
+          }
+      },
+      checkOrgCode(){
+          this.orgCodeStatus = true;
+          var orgList = [];
+          this.orgOptionArr.forEach((i,n)=>{
+            if(i.name.indexOf(this.orgName) != '-1'){
+              orgList.push({
+                name:i.name, code:i.code
+              });
+            }
+          });
+          if(this.orgName.length != 0){
+              this.orgOption = orgList;
+          }else{
+             this.orgOption = this.orgOptionArr;
+          }
+      },
+      chooseOrgCode(orgName,orgCode){
+          this.orgCodeStatus = false;
+          this.orgName = orgName;
+          this.orgCode = orgCode;
       },
       cityFocus(){
         this.cityOption.forEach((i,n)=>{
@@ -879,10 +991,21 @@
       openCreatCase(n){//打开创建案件
         if(n == 1){   // n 为1 创建假单  2为创建真单
           this.isFakeOrder = true;
+          this.modifierStatus = false;//点击创建
         }else if(n == 2){
           this.isFakeOrder = false;
-        }
-
+          this.modifierStatus = false;//点击创建
+        };
+        //修改假单
+        if(n == 3){
+          this.isFakeOrder = true;
+          this.modifierStatus = true;//点击修改
+        };
+        //修改真单
+        if(n == 4){
+          this.isFakeOrder = false;
+          this.modifierStatus = true;//点击修改
+        };
         this.cityModel = '';
         this.tuiCityArr = [];
         this.tuiCompanyArr = [];
@@ -918,9 +1041,12 @@
               });
               console.log('defaultCompany',defaultCompany);
               this.orgOption.unshift(defaultCompany[0]);
-              
+              //代理机构搜索新增
+              this.orgOptionArr = this.orgOption;
+              this.orgName = this.orgOption[0].name;
               // 默认选中当前登录机构
               this.orgCode = this.insurecompanyCode;
+
             }else{
               if(response.data.rescode == "300"){
                 this.$router.push({path:"/"})
@@ -948,6 +1074,8 @@
             this.city = '';
             this.cityName = '';
             this.orgCode = '';
+            this.orgName = '';
+            this.orgCodeStatus = false;
             this.surveyType = '1';
             this.accidentaddress = '';
             this.lng = '';
@@ -956,6 +1084,51 @@
             this.textareaValue = '';
             // this.adressValue = '';
             this.isGetOrder = false;
+      },
+      //修改案件
+      modifierData(data){
+          axios.post(this.ajaxUrl+"/survey-detail/v1/info/modify",data)
+            .then(response => {
+              if(response.data.rescode == 200){
+                this.phoneno = '';
+                this.licensenoTwo = "",
+                this.cityOption = [];
+                this.companeyOption = [];
+                this.orgOption = [];
+                this.orgOptionArr = [];
+                this.reportno = "";
+                this.person = "";
+                this.city = "";
+                this.orgCode = "";
+                this.orgName = '';
+                this.orgCodeStatus = false;
+                this.company = "";
+                this.lat = "";
+                this.lng = "";
+                this.adressValue = "";
+                this.accidentaddress = "";
+                this.adressValue = '';
+                $(".radio__inner").addClass("isChecked");
+                this.mark = "1";
+                this.sign = '1';
+                this.surveyType = '1';
+                this.getCity = "京";
+                this.cityName = "";
+                this.open2("创建成功");
+                $(".creatCaseDialog").addClass('hide');
+                this.$store.commit('getcaseListActive', true)//调用case列表接口
+              }else{
+                if(response.data.rescode == "300"){
+                  this.$router.push({path:"/"})
+                }
+                this.open4(response.data.resdes);
+              }
+            }, err => {
+              console.log(err);
+            })
+            .catch((error) => {
+              console.log(error)
+            })
       },
       creatNewCase() {//确定创建案件
         //this.companyName = $("#companyName").find("option:selected").text();
@@ -987,25 +1160,47 @@
         else if(this.accidentaddress == ""){
           this.open4("请输入事故地点")
         }else {
-          var paramData = {
-            "action": "push",
-            "phoneno": this.phoneno,
-            "licenseno": this.getCity+this.licensenoTwo,
-            "person": this.person,
-            "reportno": this.reportno,
-            "company": this.company,
-            "companyName": this.companyName,
-            "city": this.city,
-            "cityName": this.cityName,
-            "groupid": this.orgCode,
-            "surveyType": this.surveyType,
-            "accidentaddress": this.accidentaddress,
-            "lng": this.lng,
-            "lat": this.lat,
-            "mark": this.sign,
-            provinceName: this.provinceName,
-            districtName: this.districtName
-          }
+          //修改案件
+          if(this.modifierStatus == true){
+                 var paramData = {
+                         id:this.xgId,
+                         siReportPhone:this.phoneno, //手机号
+                         siReportLicenseNo:this.getCity+this.licensenoTwo,//车牌号区域
+                         siReporterName:this.person,//报案人姓名
+                         siReportNo:this.reportno,//保险报案号
+                         siInsureCode:this.company,//保险公司code
+                         siInsureName:this.companyName,//保险公司名称 
+                         siInsureName:this.companyModel,//保险公司名称 
+                         siCityCode:this.city,//城市code
+                         siCityName:this.cityName,//城市名
+                         siSurveyorOrgcode:this.orgCode,//处理机构
+                         siSurveyType:this.surveyType,//查勘类型
+                         siAccidentAddress:this.accidentaddress,//事故地点
+                         siAccidentLng:this.lng,
+                         siAccidentLat:this.lat
+                 };
+          }else{
+              var paramData = {
+                "action": "push",
+                "phoneno": this.phoneno,
+                "licenseno": this.getCity+this.licensenoTwo,
+                "person": this.person,
+                "reportno": this.reportno,
+                "company": this.company,
+                "companyName": this.companyName,
+                "city": this.city,
+                "cityName": this.cityName,
+                "groupid": this.orgCode,
+                "surveyType": this.surveyType,
+                "accidentaddress": this.accidentaddress,
+                "lng": this.lng,
+                "lat": this.lat,
+                "mark": this.sign,
+                provinceName: this.provinceName,
+                districtName: this.districtName
+              }
+          };
+          
           // 如果是创建假单
           if(this.isFakeOrder){ 
             paramData.promotionFlag = 0;
@@ -1021,7 +1216,12 @@
             paramData.getFlag = 0;            
           }
           console.log('啊啊啊啊啊啊啊啊',paramData);
-
+          //修改案件
+          // alert(this.modifierStatus)
+          if(this.modifierStatus == true){
+              this.modifierData(paramData);
+              return
+          };
           axios.post(this.ajaxUrl+"/pub/survey/v1/action",paramData)
             .then(response => {
               if(response.data.rescode == 200){
@@ -1030,10 +1230,13 @@
                   this.cityOption = [];
                 this.companeyOption = [];
                 this.orgOption = [];
+                this.orgOptionArr = [];
                 this.reportno = "";
                 this.person = "";
                 this.city = "";
                 this.orgCode = "";
+                this.orgName = '';
+                this.orgCodeStatus = false;
                 this.company = "";
                 this.lat = "";
                 this.lng = "";

@@ -141,7 +141,7 @@
           <td>{{item.survey}}</td>
           <td>{{item.videoConnectRequestCount}}</td>
           <td>{{stateHandling(item.surveySingleStatus)}}</td>
-          <td ><span v-if="item.surveyStatus == '06'" class="listAssign" @click="signSeats(item.id)" >指派</span><i v-if="item.surveyStatus == '06'">|</i><span  class="listView" @click="goCaseDetail(item.id,item.surveyStatus)">查看</span></td>
+          <td ><span v-if="item.surveyStatus == '06'" class="listAssign" @click="signSeats(item.id)" >指派</span><i v-if="item.surveyStatus == '06'">|</i><span  class="listView" @click="goCaseDetail(item.id,item.surveyStatus)">查看</span><i v-if="zcState == 'true'">|</i><span class="listView" @click="modifyCase(item.id,item.surveyStatus,item.promotionFlag)" v-if="zcState == 'true'">修改</span></td>
         </tr>
         </tbody>
       </table>
@@ -163,12 +163,14 @@
   </div>
 </template>
 <script>
+  import Bus from "../../static/bus.js"
   import axios from 'axios'
   import caseDetail from '../components/caseDetail'
   import signSeats from '../components/signSeats'
   export default {
     data() {
       return {
+        zcState:false,
         cityCode: "",
         cityOption: [],
         thirdplatform: "",
@@ -256,12 +258,18 @@
       this.getCityList();
       this.getCompaney();
       this.getCaseList();
-      this.getThirdPlate()
+      this.getThirdPlate();
+      this.zcState = localStorage.getItem('zcState');
     },
     mounted() {
       this.caseDetailActive = this.$store.state.caseDetailActive;
     },
       methods: {
+        //修改案件
+        modifyCase(id,status,promotionFlag){
+            console.log(promotionFlag)
+            Bus.$emit("MODIFY_THE_CASE",{id:id,status:status,promotionFlag:promotionFlag});
+        },
         //查勘单状态
         stateHandling(state){
           if(state === "" || state === null){
