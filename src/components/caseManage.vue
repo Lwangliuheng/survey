@@ -4,12 +4,14 @@
       <span class="caseJiankong " v-bind:class="{ active: jianKongActive }" @click="tabChange($event,1)">案件监控</span>
       <span class="allCase" v-bind:class="{ active: allCaseActive }" @click="tabChange($event,2)">全部案件</span>
       <span class="allCase" v-bind:class="{ active: allsendOrders }" @click="tabChange($event,3)" v-if="zcState">实时监控</span>
+       <span class="allCase" v-bind:class="{ active: allcongruent }" @click="tabChange($event,4)" v-if="zcState">热力图</span>
       <div class="lineBox"></div>
     </div>
     <div class="manageContent">
       <case-monitor v-if="jianKongActive" ></case-monitor>
       <case-list v-if="allCaseActive"></case-list>
       <order-list v-if="allsendOrders"></order-list>
+      <congruent-map v-if="allcongruent"></congruent-map>
     </div>
   </div>
 </template>
@@ -17,6 +19,7 @@
   import caseList from '@/components/caseList'
   import orderList from '@/components/orderList'
   import caseMonitor from '@/components/caseMonitor'
+  import congruentMap from '@/components/congruentMap'
   export default {
     // props: ['zcState'],
     data() {
@@ -24,6 +27,7 @@
         jianKongActive: true,
         allCaseActive: false,
         allsendOrders:false,
+        allcongruent:false,
         zcState: JSON.parse(localStorage.zcState)
       }
     },
@@ -33,16 +37,25 @@
          this.jianKongActive = true;
          this.allCaseActive = false;
          this.allsendOrders = false;
+         this.allcongruent = false;
        };
        if(index == 2){
          this.jianKongActive = false;
          this.allCaseActive = true;
          this.allsendOrders = false;
+         this.allcongruent = false;
        };
        if(index == 3){
          this.jianKongActive = false;
          this.allCaseActive = false;
+         this.allcongruent = false;
          this.allsendOrders = true;
+       };
+       if(index == 4){
+         this.jianKongActive = false;
+         this.allCaseActive = false;        
+         this.allsendOrders = false;
+         this.allcongruent = true;
        };
         // var attributes = event.target.attributes;
         // for(var i = 0;i< attributes.length;i++){
@@ -66,6 +79,7 @@
       caseList,
       orderList,
       caseMonitor,
+      congruentMap,
     },
   }
 

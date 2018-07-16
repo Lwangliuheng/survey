@@ -715,8 +715,9 @@
                       this.city =  data.siCityCode;//城市code
                       this.cityName =  data.siCityName;//城市名
                       this.cityModel = data.siCityName;
-                      this.orgCode =  data.siSurveyorOrgcode;//处理机构
-                      this.orgName =  data.siOrdercreateOrgname;//处理机构名称
+                      this.orgCode =  data.siGroupid;//处理机构
+                      //this.orgCode =  data.siSurveyorOrgcode;//创建机构
+                      //this.orgName =  data.siOrdercreateOrgname;//处理机构名称
                       this.surveyType =  data.siSurveyType ;//查勘类型
                       this.accidentaddress =  data.siAccidentAddress;//事故地点
                       this.adressValue = data.siAccidentAddress;//事故地点
@@ -1025,7 +1026,7 @@
               this.cityOption = response.data.data.city;
               this.companeyOption = response.data.data.company ;
               for(let i in this.companeyOption){
-                if(i == 0){
+                if(i == 0 && !this.modifierStatus){
                   this.company = this.companeyOption[0].code
                 }
               }
@@ -1038,15 +1039,23 @@
                   if(item.code == this.insurecompanyCode){
                     defaultCompany = arr.splice(index,1);
                   }
+                  //修改案件新增
+                  if(this.modifierStatus){
+                     if(item.code == this.orgCode){
+                       this.orgName = item.name;
+                     };
+                  }
               });
               console.log('defaultCompany',defaultCompany);
               this.orgOption.unshift(defaultCompany[0]);
               //代理机构搜索新增
               this.orgOptionArr = this.orgOption;
-              this.orgName = this.orgOption[0].name;
-              // 默认选中当前登录机构
-              this.orgCode = this.insurecompanyCode;
-
+              if(!this.modifierStatus){
+                  this.orgName = this.orgOption[0].name;
+                  // 默认选中当前登录机构
+                  this.orgCode = this.insurecompanyCode;
+                };
+              
             }else{
               if(response.data.rescode == "300"){
                 this.$router.push({path:"/"})
@@ -1173,7 +1182,8 @@
                          siInsureName:this.companyModel,//保险公司名称 
                          siCityCode:this.city,//城市code
                          siCityName:this.cityName,//城市名
-                         siSurveyorOrgcode:this.orgCode,//处理机构
+                         //siSurveyorOrgcode:this.orgCode,//处理机构
+                         siGroupid:this.orgCode,//处理机构
                          siSurveyType:this.surveyType,//查勘类型
                          siAccidentAddress:this.accidentaddress,//事故地点
                          siAccidentLng:this.lng,
