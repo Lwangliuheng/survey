@@ -303,15 +303,32 @@
           <h4 class="dialogTitle" v-show="!isFakeOrder">创建案件</h4>
           <div class="clear scrollBox">
             <div style="margin-top:20px;">
+             <!--  xin -->
+              <div class="addinsitituteInput">
+                <span class="addinsitituteSpan">案件类型</span>
+                <select class="creatInput" v-model="caseType">
+                  <option value="0">定损</option>
+                  <option value="1">复勘</option>
+                  <option value="2">人伤</option>                 
+                </select>
+              </div>
+
               <div class="addinsitituteInput">
                 <span class="addinsitituteSpan">报案人手机号</span>
                 <input type="tel" class="creatInput" v-model="phoneno"  maxlength="11" placeholder="请输入报案人手机号"/>
               </div>
-              <div class="addinsitituteInput">
+              <!--  xin -->
+              <div class="addinsitituteInput" v-if="caseType != 2">
                 <span class="addinsitituteSpan">报案人车牌号</span>
                 <input type="text" @click="openCityDialog" class="creatInputNo"  readonly :value="getCity" />
                 <input class="creatInput" type="text" v-model="licensenoTwo" @keyup="upcase()" style="margin-left:-6px;width:165px;" placeholder="请输入报案人车牌号"/>
               </div>
+              <!--  xin -->
+              <div class="addinsitituteInput" v-if="caseType == 2">
+                <span class="addinsitituteSpan">所在医院</span>
+               <input type="tel" class="creatInput" v-model="hospitalName"  maxlength="11" placeholder="请输入医院名称"/>
+              </div>
+
               <div class="addinsitituteInput">
                 <span class="addinsitituteSpan">报案人姓名</span>
                 <input class="creatInput" v-model="person" type="text" placeholder="请输入报案人姓名"/>
@@ -393,7 +410,8 @@
                 <span class="addinsitituteSpan">是否可抢</span>
                 <input type="checkbox" v-model="isGetOrder">
               </div>
-              <div class="addinsitituteInput addinsitituteInputTe">
+              <!-- xin -->
+              <div class="addinsitituteInput addinsitituteInputTe" v-if="caseType != 2">
                 <textarea class="feed_textarea" v-model="textareaValue"  placeholder="请填写匹配信息" >
                 </textarea>
                 <span class="addinsitituteSpan intelligentMatch" @click="intelligentMatchClick">智能匹配</span>
@@ -508,6 +526,10 @@
   export default {
     data(){
       return{
+        //xin
+        caseType:'0',
+        hospitalName:'',
+
         orgCodeStatus:false,
         xgId:"",
         modifierStatus:false,
@@ -1144,6 +1166,34 @@
         //this.cityName = $("#cityName").find("option:selected").text();
         this.licensenoTwo = this.licensenoTwo.replace(/\s|\xA0/g,"");
         this.phoneno = this.phoneno.replace(/\s/g,"");
+        
+        // xin
+        //人伤创建案件
+        if(this.caseType == 2){
+           alert("人伤创建案件")
+           var paramData = {
+               "action": "push",
+               "phoneno": this.phoneno,//手机号
+               //"licenseno": this.getCity+this.licensenoTwo,//车牌号区域
+               "person": this.person,//报案人姓名
+               "reportno": this.reportno,//保险报案号
+               "company": this.company,//保险公司code
+               "companyName": this.companyName,//保险公司名称 
+               "city": this.city,//城市code
+               "cityName": this.cityName,//城市名
+               "groupid": this.orgCode,//处理机构
+               "surveyType": this.surveyType,//查勘类型
+               "accidentaddress": this.accidentaddress,//事故地点
+               "lng": this.lng,
+               "lat": this.lat,
+               "mark": this.sign,//指派类型
+               provinceName: this.provinceName,//省份名称
+               districtName: this.districtName   //行政区名称
+           };
+           console.log(paramData,777777777)
+           return
+        };
+
         var reg = new RegExp("^[0-9]*$");
         if(!reg.test(this.phoneno)){
           this.open4("请输入正确手机号")
