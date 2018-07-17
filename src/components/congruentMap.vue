@@ -169,6 +169,7 @@
   overflow: hidden;
   top:10px;
   left:20px;
+  z-index: 10000;
 }
 .tabOne{
   width:150px;
