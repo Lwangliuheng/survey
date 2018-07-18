@@ -126,7 +126,7 @@
   .caseInfoBoxAdress{
     position: relative;
     display:inline-block;
-    width: 50%;
+    width: 22%;
   }
   .caseInfoBoxTitle{
     width: 70px;
@@ -188,9 +188,14 @@
                     <div id="detailMap" class="hide" style="height:250px;width:250px;"></div>
                   </div>
                 </div>
+
+                <!-- xin -->
+                
+                   <span>所在医院：</span><i class="chakanno">{{caseDetailData.accidentInfo .surveyNo }}</i>
+                
               </div>
 
-              <div class="caseInfoBox" v-if="caseDetailData.accidentInfo.exceptionReason != null"><span>事故经过：</span><i>{{caseDetailData.accidentInfo.exceptionReason}}</i></div>
+           <!--    <div class="caseInfoBox" v-if="caseDetailData.accidentInfo.exceptionReason != null"><span>事故经过：</span><i>{{caseDetailData.accidentInfo.exceptionReason}}</i></div> -->
           </div>
           <div class="AimCar" v-if="beizhuActive">
             <div  class="aimheader">备注信息</div>
@@ -201,11 +206,15 @@
             </div>
           </div>
           <div class="AimCar">
-            <div class="aimheader">标的车</div>
+            <div class="aimheader">人伤信息</div>
             <div class="aimInfo">
               <table class="table" border="0" cellspacing="0" cellpadding="0">
-                <tr><td>车牌号:</td><td>{{caseDetailData.reportVehicleInfo.vehicleLicenseNo}}</td><td>车主姓名:</td><td>{{caseDetailData.reportVehicleInfo.reporterName}}</td><td>车主电话: </td><td>{{caseDetailData.reportVehicleInfo.reporterPhoneNo}}</td></tr>
-                <tr><td>保险公司:</td><td> {{caseDetailData.reportVehicleInfo.insuranceCompanyName}}</td><td>保险公司城市： </td><td>{{caseDetailData.reportVehicleInfo.insuranceCompanyCity}}</td><td> 处理机构：</td><td>{{caseDetailData.reportVehicleInfo.processOrgName}}</td></tr>
+                <tr>
+                <td>伤者姓名:</td><td>{{caseDetailData.reportVehicleInfo.vehicleLicenseNo}}</td>
+                <td>伤者电话:</td><td>{{caseDetailData.reportVehicleInfo.reporterName}}</td>
+                <td>保险公司: </td><td>{{caseDetailData.reportVehicleInfo.insuranceCompanyName}}</td>
+                <td>城市: </td><td>{{caseDetailData.reportVehicleInfo.insuranceCompanyCity}}</td>
+                </tr>
               </table>
               <div class="aimCarImg" v-if="totalCountAim != 0">
                 <ul id="scaleImg">
@@ -226,51 +235,7 @@
               </div>
             </div>
           </div>
-          <!--<div class="thirdCar AimCar" v-if="thirdActive" v-for="(item,index) in thirdCar">-->
-          <div class="thirdCar AimCar" v-if="thirdActive" v-for="(item,index) in thirdCar">
-            <div class="aimheader">三者车({{item.vehicleLicenseNo}})</div>
-            <div class="aimInfo">
-              <table class="table" border="0" cellspacing="0" cellpadding="0">
-                <tr><td>车牌号:</td><td>{{item.vehicleLicenseNo}}</td><td>车主电话: </td><td v-if="item.contactPhoneNo == null"> 暂无</td><td v-else>{{item.contactPhoneNo}}</td></tr>
-              </table>
-              <div class="aimCarImg thirdImg"  v-if="item.thirdCarImg.length!=0">
-                <ul class="suibian">
-                  <li v-for="itemImg in item.thirdCarImg">
-                    <img :data-src="itemImg.photoUri" :src="itemImg.smallPhotoUri"/>
-                    <br>
-                    <span>{{itemImg.photoTypeComment}}</span>
-                  </li>
-                </ul>
-                <div class="phonesPaging" @click="getCarNo(item.vehicleLicenseNo)" >
-                  <el-pagination  @current-change='handleCurrentChangethird'
-                                  :current-page="1"
-                                  :page-size = "4"
-                                  layout="prev,next"
-                                  :total="item.total">
-                  </el-pagination>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="thirdCar AimCar " v-if="caseDetailData.surveyVideoRooms.length != 0">
-            <div class="aimheader">查勘现场视频</div>
-            <!--<div v-if="showFlash">-->
-              <!--<h1>Alternative content</h1>-->
-              <!--<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>-->
-            <!--</div>-->
-            <div class="aimInfo videoBox">
-              <div id="videoList" class="clear" v-if="showOldActive">
-                <div class="left" v-for="(item,index) in surveyVideoRooms" :id='"video"+index' style="width:280px;height:200px;margin:6px 10px;"  :swfobjId='"videourl"+index'></div>
-              </div>
-              <div class="videoList clear" v-else>
 
-                <div class="left vid-wrapper" id="videoBox" v-for="(item,index) in surveyVideoRooms"   >
-                  <video  controls="controls" :src="item.videoRoomId" type="video/mp4"  style="width:280px;height:200px;margin:6px 10px;">
-                  </video>
-                </div>
-              </div>
-            </div>
-          </div>
           <div class="AimCar reporPerson" v-if="caseDetailData.sceneSurveyorInfo != null">
             <div class="aimheader">查勘员信息</div>
             <div class="aimInfo">

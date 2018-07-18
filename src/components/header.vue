@@ -306,10 +306,11 @@
              <!--  xin -->
               <div class="addinsitituteInput">
                 <span class="addinsitituteSpan">案件类型</span>
-                <select class="creatInput" v-model="caseType">
-                  <option value="0">定损</option>
-                  <option value="1">复勘</option>
-                  <option value="2">人伤</option>                 
+                <select class="creatInput" v-model="caseType" :disabled="isdisabled">
+                  <option value="1">查勘</option>
+                  <option value="2">定损</option>
+                  <option value="3">复勘</option>
+                  <option value="4"  v-if="!isFakeOrder">人伤</option>                 
                 </select>
               </div>
 
@@ -318,13 +319,13 @@
                 <input type="tel" class="creatInput" v-model="phoneno"  maxlength="11" placeholder="请输入报案人手机号"/>
               </div>
               <!--  xin -->
-              <div class="addinsitituteInput" v-if="caseType != 2">
+              <div class="addinsitituteInput" v-if="caseType != 4">
                 <span class="addinsitituteSpan">报案人车牌号</span>
                 <input type="text" @click="openCityDialog" class="creatInputNo"  readonly :value="getCity" />
                 <input class="creatInput" type="text" v-model="licensenoTwo" @keyup="upcase()" style="margin-left:-6px;width:165px;" placeholder="请输入报案人车牌号"/>
               </div>
               <!--  xin -->
-              <div class="addinsitituteInput" v-if="caseType == 2">
+              <div class="addinsitituteInput" v-if="caseType == 4">
                 <span class="addinsitituteSpan">所在医院</span>
                <input type="tel" class="creatInput" v-model="hospitalName"  maxlength="11" placeholder="请输入医院名称"/>
               </div>
@@ -411,7 +412,7 @@
                 <input type="checkbox" v-model="isGetOrder">
               </div>
               <!-- xin -->
-              <div class="addinsitituteInput addinsitituteInputTe" v-if="caseType != 2">
+              <div class="addinsitituteInput addinsitituteInputTe" v-if="caseType != 4">
                 <textarea class="feed_textarea" v-model="textareaValue"  placeholder="请填写匹配信息" >
                 </textarea>
                 <span class="addinsitituteSpan intelligentMatch" @click="intelligentMatchClick">智能匹配</span>
@@ -527,8 +528,9 @@
     data(){
       return{
         //xin
-        caseType:'0',
+        caseType:'1',
         hospitalName:'',
+        isdisabled:false,
 
         orgCodeStatus:false,
         xgId:"",
@@ -590,14 +592,35 @@
        Bus.$on('MODIFY_THE_CASE', (data) => { //Hub接收事件
           this.xgId = parseInt(data.id);
           this.modifyInfo(data);
+          // xin
+          if(data.num == 1){
+            this.caseType = 1;
+           
+          };
+           if(data.num == 2){
+            this.caseType = 2;
+          
+          };
+           if(data.num == 3){
+            this.caseType = 3;
+            this.isdisabled = true;
+          };
+          if(data.num == 4){
+            this.caseType = 4;
+            //修改人伤单
+            this.openCreatCase(5);
+            return
+          };
+
+
           if(data.promotionFlag == 0){
             //修改假单
             this.openCreatCase(3);
-          }
+          };
           if(data.promotionFlag == 1){
             //修改真单
             this.openCreatCase(4);
-          }
+          };
 
 
                 
@@ -1015,19 +1038,35 @@
         if(n == 1){   // n 为1 创建假单  2为创建真单
           this.isFakeOrder = true;
           this.modifierStatus = false;//点击创建
+          // xin
+          this.isdisabled = false;
         }else if(n == 2){
           this.isFakeOrder = false;
           this.modifierStatus = false;//点击创建
+          // xin
+          this.isdisabled = false;
         };
         //修改假单
         if(n == 3){
           this.isFakeOrder = true;
           this.modifierStatus = true;//点击修改
+          // xin
+          this.isdisabled = true;
         };
         //修改真单
         if(n == 4){
           this.isFakeOrder = false;
           this.modifierStatus = true;//点击修改
+          // xin
+          this.isdisabled = true;
+        };
+        // xin
+        //修改人伤
+        if(n == 5){
+          this.isFakeOrder = false;
+          this.modifierStatus = true;//点击修改
+          // xin
+          this.isdisabled = true;
         };
         this.cityModel = '';
         this.tuiCityArr = [];
@@ -1049,7 +1088,11 @@
               this.companeyOption = response.data.data.company ;
               for(let i in this.companeyOption){
                 if(i == 0 && !this.modifierStatus){
-                  this.company = this.companeyOption[0].code
+                  console.log(this.companeyOption[0],78789987978798)
+                  this.company = this.companeyOption[0].code;
+                  //xin
+                  this.companyName = this.companeyOption[0].name;
+                  this.companyModel = this.companeyOption[0].name;
                 }
               }
               this.orgOption= response.data.data.org;
@@ -1095,6 +1138,10 @@
         $(".creatCaseDialog").addClass('hide');
 
         // 清空输入框
+        // xin
+        this.caseType = '1';
+        this.hospitalName = "";
+
             this.phoneno = '';
             this.getCity= '京';
             this.licensenoTwo = '';
@@ -1102,6 +1149,8 @@
             this.reportno = '';
             this.company = '';
             this.companyName = '';
+            //xin
+            this.companyModel = '';
             this.city = '';
             this.cityName = '';
             this.orgCode = '';
@@ -1169,8 +1218,34 @@
         
         // xin
         //人伤创建案件
-        if(this.caseType == 2){
+        if(this.caseType == 4){
            alert("人伤创建案件")
+           var paramData = {
+               "action": "push",
+               "phoneno": this.phoneno,//手机号
+               //"licenseno": this.getCity+this.licensenoTwo,//车牌号区域
+               "person": this.person,//报案人姓名
+               "reportno": this.reportno,//保险报案号
+               "company": this.company,//保险公司code
+               "companyName": this.companyName,//保险公司名称 
+               "city": this.city,//城市code
+               "cityName": this.cityName,//城市名
+               "groupid": this.orgCode,//处理机构
+               "surveyType": this.surveyType,//查勘类型
+               "accidentaddress": this.accidentaddress,//事故地点
+               "lng": this.lng,
+               "lat": this.lat,
+               "mark": this.sign,//指派类型
+               provinceName: this.provinceName,//省份名称
+               districtName: this.districtName   //行政区名称
+           };
+           console.log(paramData,777777777)
+           return
+        };
+         // xin
+        //人伤修改案件
+        if(this.caseType == 4 && this.modifierStatus == true){
+           alert("人伤修改案件")
            var paramData = {
                "action": "push",
                "phoneno": this.phoneno,//手机号
@@ -1229,7 +1304,7 @@
                          siReportNo:this.reportno,//保险报案号
                          siInsureCode:this.company,//保险公司code
                          siInsureName:this.companyName,//保险公司名称 
-                         siInsureName:this.companyModel,//保险公司名称 
+                         //siInsureName:this.companyModel,//保险公司名称 
                          siCityCode:this.city,//城市code
                          siCityName:this.cityName,//城市名
                          //siSurveyorOrgcode:this.orgCode,//处理机构

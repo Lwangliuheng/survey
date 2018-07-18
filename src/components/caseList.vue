@@ -36,6 +36,25 @@
             :value="item.code">
           </el-option>
         </el-select>
+        <!-- xin -->
+        <span >案件类型:</span>
+        <el-select v-model="caseTypeStatus"  name="case" placeholder="请选择案件案件类型">
+          <el-option
+            v-for="item in caseTypeOption"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code">
+          </el-option>
+        </el-select>
+        <span >专家坐席:</span>
+        <el-select v-model="specialistStatus"  name="case" placeholder="请选择案件案件类型">
+          <el-option
+            v-for="item in specialistOption"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code">
+          </el-option>
+        </el-select>
 
         <span >案件状态:</span>
         <el-select v-model="surveyStatus"  name="case" placeholder="请选择案件状态">
@@ -115,6 +134,10 @@
           <th style="width:18%;">
             事故地点
           </th>
+          <!-- xin -->
+          <th>
+            案件类型
+          </th>
           <th>
             案件状态
           </th>
@@ -138,10 +161,13 @@
           <td>{{item.insuranceCompanyName}}</td>
           <td style="width:160px;">{{item.accidentTime}}</td>
           <td>{{item.accidentAddress}}</td>
+          <!-- xin -->
+          <td>222</td>
           <td>{{item.survey}}</td>
           <td>{{item.videoConnectRequestCount}}</td>
           <td>{{stateHandling(item.surveySingleStatus)}}</td>
-          <td ><span v-if="item.surveyStatus == '06'" class="listAssign" @click="signSeats(item.id)" >指派</span><i v-if="item.surveyStatus == '06'">|</i><span  class="listView" @click="goCaseDetail(item.id,item.surveyStatus)">查看</span><i v-if="zcState == 'true'">|</i><span class="listView" @click="modifyCase(item.id,item.surveyStatus,item.promotionFlag)" v-if="zcState == 'true'">修改</span></td>
+          <td ><span v-if="item.surveyStatus == '06'" class="listAssign" @click="signSeats(item.id)" >指派</span><i v-if="item.surveyStatus == '06'">|</i><span  class="listView" @click="goCaseDetail(item.id,item.surveyStatus,4)">
+          查看</span><i v-if="zcState == 'true'">|</i><!-- xin --><span class="listView" @click="modifyCase(item.id,item.surveyStatus,item.promotionFlag,4)" v-if="zcState == 'true'">修改</span></td>
         </tr>
         </tbody>
       </table>
@@ -157,6 +183,9 @@
     <div class="caseListTable" v-else>
       <p style="text-align:center;margin-top: 15px;">暂无数据</p>
     </div>
+    <!-- xin -->
+    <people-hurt v-if="peopleHurtActive"></people-hurt>
+
     <case-detail v-if="caseDetailActive"></case-detail>
     <sign-Seats v-if="signSeatsActive"></sign-Seats>
     <!--&lt;!&ndash;layout="total,prev,pager, next,jumper"&ndash;&gt;layout="total,prev,pager, next,jumper"-->
@@ -167,9 +196,30 @@
   import axios from 'axios'
   import caseDetail from '../components/caseDetail'
   import signSeats from '../components/signSeats'
+  // xin
+  import peopleHurt from '../components/peopleHurtDetail'
   export default {
     data() {
       return {
+        //peopleHurtActive:false,
+        // peopleHurtStatus:false,
+        specialistStatus:"0",
+        specialistOption:[
+             {"name":"全部","code":"0"},
+             {"name":"刘玉川","code":"1"},
+             {"name":"邹东旭","code":"2"},
+             {"name":"张三","code":"3"},
+             {"name":"李四","code":"4"}
+        ],
+        caseTypeStatus:"0",
+        caseTypeOption:[
+          {"name":"全部","code":"0"},
+          {"name":"查勘","code":"1"},
+          {"name":"定损","code":"2"},
+          {"name":"复勘","code":"3"},
+          {"name":"人伤","code":"4"}
+        ],
+
         zcState:false,
         cityCode: "",
         cityOption: [],
@@ -262,13 +312,16 @@
       this.zcState = localStorage.getItem('zcState');
     },
     mounted() {
+      // xin
+      //this.peopleHurtActive = this.$store.state.peopleHurtActive;
+    
       this.caseDetailActive = this.$store.state.caseDetailActive;
     },
       methods: {
         //修改案件
-        modifyCase(id,status,promotionFlag){
+        modifyCase(id,status,promotionFlag,num){
             console.log(promotionFlag)
-            Bus.$emit("MODIFY_THE_CASE",{id:id,status:status,promotionFlag:promotionFlag});
+            Bus.$emit("MODIFY_THE_CASE",{id:id,status:status,promotionFlag:promotionFlag,num:num});
         },
         //查勘单状态
         stateHandling(state){
@@ -534,6 +587,11 @@
           this.getCaseList()
         },
         resetData(){
+          // xin
+          this.specialistStatus = "0";
+          this.caseTypeStatus = "0"; 
+
+          
           this.thirdplatform = ''
           this.insuranceCompanyCode = "";
           this.orgCode = "";
@@ -559,7 +617,7 @@
           this.currentPageNo = currentPage;
           this.getCaseList()
         },
-        goCaseDetail(id,orderStatus){
+        goCaseDetail(id,orderStatus,num){
             var paramData = {
               "id": parseInt(id),
               "orderStatus": orderStatus
@@ -573,6 +631,12 @@
                   if(response.data.data != null){
                     var data = JSON.stringify(response.data.data)
                     localStorage.setItem("caseDetailData",data);
+                    //xin
+                    if(num == 4){
+                         this.$store.commit('setPeopleHurtActive', true);
+                         return
+                    };
+
                     this.$store.commit('setCaseDetailActive', true);
                     this.caseDetailActive = this.$store.state.caseDetailActive;
                   }
@@ -586,10 +650,18 @@
         }
       },
     components: {
+      // xin
+      peopleHurt,
+
       caseDetail,
       signSeats,
     },
     computed: {
+      // xin
+      peopleHurtActive(){
+        return this.$store.state.peopleHurtActive;
+      },
+
      getUserIcons(){
        return this.$store.state.caseDetailActive;
      },
