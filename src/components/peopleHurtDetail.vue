@@ -235,6 +235,26 @@
               </div>
             </div>
           </div>
+          
+         <div class="thirdCar AimCar " v-if="caseDetailData.surveyVideoRooms.length != 0">
+           <div class="aimheader">查勘现场视频</div>
+           <!--<div v-if="showFlash">-->
+             <!--<h1>Alternative content</h1>-->
+             <!--<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>-->
+           <!--</div>-->
+           <div class="aimInfo videoBox">
+             <div id="videoList" class="clear" v-if="showOldActive">
+               <div class="left" v-for="(item,index) in surveyVideoRooms" :id='"video"+index' style="width:280px;height:200px;margin:6px 10px;"  :swfobjId='"videourl"+index'></div>
+             </div>
+             <div class="videoList clear" v-else>
+
+               <div class="left vid-wrapper" id="videoBox" v-for="(item,index) in surveyVideoRooms"   >
+                 <video  controls="controls" :src="item.videoRoomId" type="video/mp4"  style="width:280px;height:200px;margin:6px 10px;">
+                 </video>
+               </div>
+             </div>
+           </div>
+         </div>
 
           <div class="AimCar reporPerson" v-if="caseDetailData.sceneSurveyorInfo != null">
             <div class="aimheader">查勘员信息</div>
