@@ -389,6 +389,12 @@
                   <option value="3">闪送</option>
                 </select>
               </div>
+              
+              <div class="addinsitituteInput" v-if="modifierStatus">
+                <span class="addinsitituteSpan">是否重置案件状态</span>
+                <input type="checkbox" v-model="isCaseStatus">
+              </div>
+
               <div class="addinsitituteInput" v-if="isFakeOrder">
                 <span class="addinsitituteSpan">是否可抢</span>
                 <input type="checkbox" v-model="isGetOrder">
@@ -512,6 +518,7 @@
         xgId:"",
         modifierStatus:false,
         textareaValue:"",
+        isCaseStatus:false,//是否案件重置
         isGetOrder: false, // 是否可以抢到假单
         zcState:false,
         zhongcheActive: true,
@@ -1188,6 +1195,9 @@
                          siAccidentAddress:this.accidentaddress,//事故地点
                          siAccidentLng:this.lng,
                          siAccidentLat:this.lat
+                 };
+                 if(this.isCaseStatus){
+                     paramData.siStatus = "06";
                  };
           }else{
               var paramData = {
